@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Department Logo">
+  <rect width="200" height="200" rx="20" ry="20" fill="#2a2a72"/>
+  <path d="M60 120 C60 80 90 60 100 60 C110 60 140 80 140 120 C140 160 115 180 100 180 C85 180 60 160 60 120 Z" fill="#f4c542"/>
+  <path d="M80 95 C80 78 92 70 100 70 C108 70 120 78 120 95" stroke="#2a2a72" stroke-width="8" fill="none"/>
+  <circle cx="85" cy="120" r="8" fill="#2a2a72"/>
+  <circle cx="115" cy="120" r="8" fill="#2a2a72"/>
+  <path d="M80 150 C85 160 95 165 100 165 C105 165 115 160 120 150" stroke="#2a2a72" stroke-width="8" fill="none"/>
+</svg>

@@ -1,0 +1,2163 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -------------------< com.way2jobs:way2jobs-backend >--------------------
+[INFO] Building way2jobs-backend 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:3.5.4:run (default-cli) > test-compile @ way2jobs-backend >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ way2jobs-backend ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ way2jobs-backend ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 60 source files with javac [debug parameters release 21] to target/classes
+[INFO] /home/ravitheja/Downloads/way2jobs-backend/src/main/java/com/way2jobs/security/JwtUtil.java: /home/ravitheja/Downloads/way2jobs-backend/src/main/java/com/way2jobs/security/JwtUtil.java uses or overrides a deprecated API.
+[INFO] /home/ravitheja/Downloads/way2jobs-backend/src/main/java/com/way2jobs/security/JwtUtil.java: Recompile with -Xlint:deprecation for details.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ way2jobs-backend ---
+[INFO] skip non existing resourceDirectory /home/ravitheja/Downloads/way2jobs-backend/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ way2jobs-backend ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 2 source files with javac [debug parameters release 21] to target/test-classes
+[INFO] 
+[INFO] <<< spring-boot:3.5.4:run (default-cli) < test-compile @ way2jobs-backend <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:3.5.4:run (default-cli) @ way2jobs-backend ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.5.4)
+
+2026-08-06T15:47:50.691+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] c.way2jobs.Way2jobsBackendApplication    : Starting Way2jobsBackendApplication using Java 21.0.11 with PID 8313 (/home/ravitheja/Downloads/way2jobs-backend/target/classes started by ravitheja in /home/ravitheja/Downloads/way2jobs-backend)
+2026-08-06T15:47:50.693+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] c.way2jobs.Way2jobsBackendApplication    : No active profile set, falling back to 1 default profile: "default"
+2026-08-06T15:47:50.764+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2026-08-06T15:47:50.764+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2026-08-06T15:47:51.955+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-08-06T15:47:52.053+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 88 ms. Found 6 JPA repository interfaces.
+2026-08-06T15:47:52.724+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-08-06T15:47:52.741+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-08-06T15:47:52.741+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.43]
+2026-08-06T15:47:52.787+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-08-06T15:47:52.789+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2023 ms
+2026-08-06T15:47:53.052+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-08-06T15:47:53.091+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.22.Final
+2026-08-06T15:47:53.124+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-08-06T15:47:53.431+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-08-06T15:47:53.485+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-08-06T15:47:53.889+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@78cceb47
+2026-08-06T15:47:53.890+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-08-06T15:47:53.961+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 16.14
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-08-06T15:47:54.971+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-08-06T15:47:55.222+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-08-06T15:47:55.779+05:30  WARN 8313 --- [way2jobs-backend] [  restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-08-06T15:47:55.822+05:30  WARN 8313 --- [way2jobs-backend] [  restartedMain] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 97cd29b4-be9d-4b62-aef2-c16570ad79fd
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-08-06T15:47:55.830+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-08-06T15:47:56.201+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2026-08-06T15:47:56.542+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2026-08-06T15:47:56.621+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2026-08-06T15:47:56.636+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] c.way2jobs.Way2jobsBackendApplication    : Started Way2jobsBackendApplication in 6.399 seconds (process running for 6.97)
+2026-08-06T15:48:27.528+05:30  INFO 8313 --- [way2jobs-backend] [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-08-06T15:48:27.529+05:30  INFO 8313 --- [way2jobs-backend] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-08-06T15:48:27.530+05:30  INFO 8313 --- [way2jobs-backend] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+Hibernate: 
+    select
+        s1_0.id,
+        s1_0.name 
+    from
+        states s1_0 
+    order by
+        s1_0.name
+2026-08-06T15:52:24.501+05:30  INFO 8313 --- [way2jobs-backend] [   File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 75 class path changes (0 additions, 75 deletions, 0 modifications)
+2026-08-06T15:52:24.505+05:30  INFO 8313 --- [way2jobs-backend] [       Thread-5] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-08-06T15:52:24.508+05:30  INFO 8313 --- [way2jobs-backend] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-08-06T15:52:24.515+05:30  INFO 8313 --- [way2jobs-backend] [       Thread-5] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-08-06T15:52:24.518+05:30  INFO 8313 --- [way2jobs-backend] [       Thread-5] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-08-06T15:52:24.542+05:30  INFO 8313 --- [way2jobs-backend] [       Thread-5] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.5.4)
+
+2026-08-06T15:52:24.679+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] c.way2jobs.Way2jobsBackendApplication    : Starting Way2jobsBackendApplication using Java 21.0.11 with PID 8313 (/home/ravitheja/Downloads/way2jobs-backend/target/classes started by ravitheja in /home/ravitheja/Downloads/way2jobs-backend)
+2026-08-06T15:52:24.680+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] c.way2jobs.Way2jobsBackendApplication    : No active profile set, falling back to 1 default profile: "default"
+2026-08-06T15:52:24.921+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-08-06T15:52:24.923+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 1 ms. Found 0 JPA repository interfaces.
+2026-08-06T15:52:25.040+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-08-06T15:52:25.041+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-08-06T15:52:25.041+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.43]
+2026-08-06T15:52:25.048+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-08-06T15:52:25.048+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 367 ms
+2026-08-06T15:52:25.133+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-08-06T15:52:25.135+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-08-06T15:52:25.174+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-08-06T15:52:25.179+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Starting...
+2026-08-06T15:52:25.223+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-2 - Added connection org.postgresql.jdbc.PgConnection@30449dd3
+2026-08-06T15:52:25.223+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Start completed.
+2026-08-06T15:52:25.229+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-2)']
+	Database driver: undefined/unknown
+	Database version: 16.14
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-08-06T15:52:25.250+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-08-06T15:52:25.252+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-08-06T15:52:25.292+05:30  WARN 8313 --- [way2jobs-backend] [  restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-08-06T15:52:25.476+05:30  WARN 8313 --- [way2jobs-backend] [  restartedMain] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 6a0796f3-b824-4530-964d-5b0903fabc64
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-08-06T15:52:25.477+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-08-06T15:52:25.514+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2026-08-06T15:52:25.591+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2026-08-06T15:52:25.616+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2026-08-06T15:52:25.624+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] c.way2jobs.Way2jobsBackendApplication    : Started Way2jobsBackendApplication in 0.977 seconds (process running for 275.958)
+2026-08-06T15:52:25.633+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation delta:
+
+
+==========================
+CONDITION EVALUATION DELTA
+==========================
+
+
+Positive matches:
+-----------------
+
+   ManagementWebSecurityAutoConfiguration matched:
+      - found 'session' scope (OnWebApplicationCondition)
+      - AllNestedConditions 2 matched 0 did not; NestedCondition on DefaultWebSecurityCondition.Beans @ConditionalOnMissingBean (types: org.springframework.security.web.SecurityFilterChain; SearchStrategy: all) did not find any beans; NestedCondition on DefaultWebSecurityCondition.Classes @ConditionalOnClass found required classes 'org.springframework.security.web.SecurityFilterChain', 'org.springframework.security.config.annotation.web.builders.HttpSecurity' (DefaultWebSecurityCondition)
+
+
+Negative matches:
+-----------------
+
+    None
+
+
+Exclusions:
+-----------
+
+    None
+
+
+Unconditional classes:
+----------------------
+
+    None
+
+
+
+2026-08-06T15:52:27.797+05:30  INFO 8313 --- [way2jobs-backend] [   File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 75 class path changes (75 additions, 0 deletions, 0 modifications)
+2026-08-06T15:52:27.798+05:30  INFO 8313 --- [way2jobs-backend] [       Thread-7] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-08-06T15:52:27.800+05:30  INFO 8313 --- [way2jobs-backend] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-08-06T15:52:27.803+05:30  INFO 8313 --- [way2jobs-backend] [       Thread-7] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-08-06T15:52:27.804+05:30  INFO 8313 --- [way2jobs-backend] [       Thread-7] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown initiated...
+2026-08-06T15:52:27.819+05:30  INFO 8313 --- [way2jobs-backend] [       Thread-7] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.5.4)
+
+2026-08-06T15:52:27.902+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] c.way2jobs.Way2jobsBackendApplication    : Starting Way2jobsBackendApplication using Java 21.0.11 with PID 8313 (/home/ravitheja/Downloads/way2jobs-backend/target/classes started by ravitheja in /home/ravitheja/Downloads/way2jobs-backend)
+2026-08-06T15:52:27.902+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] c.way2jobs.Way2jobsBackendApplication    : No active profile set, falling back to 1 default profile: "default"
+2026-08-06T15:52:28.087+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-08-06T15:52:28.099+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 11 ms. Found 6 JPA repository interfaces.
+2026-08-06T15:52:28.187+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-08-06T15:52:28.188+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-08-06T15:52:28.188+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.43]
+2026-08-06T15:52:28.195+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-08-06T15:52:28.195+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 291 ms
+2026-08-06T15:52:28.250+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-08-06T15:52:28.252+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-08-06T15:52:28.257+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-08-06T15:52:28.258+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Starting...
+2026-08-06T15:52:28.282+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-3 - Added connection org.postgresql.jdbc.PgConnection@68e2362b
+2026-08-06T15:52:28.283+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Start completed.
+2026-08-06T15:52:28.287+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-3)']
+	Database driver: undefined/unknown
+	Database version: 16.14
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-08-06T15:52:28.426+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-08-06T15:52:28.583+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-08-06T15:52:28.762+05:30  WARN 8313 --- [way2jobs-backend] [  restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-08-06T15:52:28.775+05:30  WARN 8313 --- [way2jobs-backend] [  restartedMain] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: b027558e-7ac5-4c4d-803b-2f8ef484f66d
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-08-06T15:52:28.776+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-08-06T15:52:28.862+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2026-08-06T15:52:28.931+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2026-08-06T15:52:28.942+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2026-08-06T15:52:28.948+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] c.way2jobs.Way2jobsBackendApplication    : Started Way2jobsBackendApplication in 1.06 seconds (process running for 279.281)
+2026-08-06T15:52:28.950+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation delta:
+
+
+==========================
+CONDITION EVALUATION DELTA
+==========================
+
+
+Positive matches:
+-----------------
+
+    None
+
+
+Negative matches:
+-----------------
+
+   ManagementWebSecurityAutoConfiguration:
+      Did not match:
+         - AllNestedConditions 1 matched 1 did not; NestedCondition on DefaultWebSecurityCondition.Beans @ConditionalOnMissingBean (types: org.springframework.security.web.SecurityFilterChain; SearchStrategy: all) found beans of type 'org.springframework.security.web.SecurityFilterChain' securityFilterChain; NestedCondition on DefaultWebSecurityCondition.Classes @ConditionalOnClass found required classes 'org.springframework.security.web.SecurityFilterChain', 'org.springframework.security.config.annotation.web.builders.HttpSecurity' (DefaultWebSecurityCondition)
+      Matched:
+         - found 'session' scope (OnWebApplicationCondition)
+
+
+Exclusions:
+-----------
+
+    None
+
+
+Unconditional classes:
+----------------------
+
+    None
+
+
+
+2026-08-06T15:53:13.442+05:30  INFO 8313 --- [way2jobs-backend] [   File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 75 class path changes (0 additions, 75 deletions, 0 modifications)
+2026-08-06T15:53:13.443+05:30  INFO 8313 --- [way2jobs-backend] [      Thread-11] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-08-06T15:53:13.444+05:30  INFO 8313 --- [way2jobs-backend] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-08-06T15:53:13.446+05:30  INFO 8313 --- [way2jobs-backend] [      Thread-11] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-08-06T15:53:13.447+05:30  INFO 8313 --- [way2jobs-backend] [      Thread-11] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Shutdown initiated...
+2026-08-06T15:53:13.460+05:30  INFO 8313 --- [way2jobs-backend] [      Thread-11] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.5.4)
+
+2026-08-06T15:53:13.555+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] c.way2jobs.Way2jobsBackendApplication    : Starting Way2jobsBackendApplication using Java 21.0.11 with PID 8313 (/home/ravitheja/Downloads/way2jobs-backend/target/classes started by ravitheja in /home/ravitheja/Downloads/way2jobs-backend)
+2026-08-06T15:53:13.555+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] c.way2jobs.Way2jobsBackendApplication    : No active profile set, falling back to 1 default profile: "default"
+2026-08-06T15:53:13.772+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-08-06T15:53:13.774+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 1 ms. Found 0 JPA repository interfaces.
+2026-08-06T15:53:13.871+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-08-06T15:53:13.872+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-08-06T15:53:13.872+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.43]
+2026-08-06T15:53:13.887+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-08-06T15:53:13.888+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 332 ms
+2026-08-06T15:53:13.960+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-08-06T15:53:13.962+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-08-06T15:53:13.969+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-08-06T15:53:13.970+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Starting...
+2026-08-06T15:53:14.006+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-4 - Added connection org.postgresql.jdbc.PgConnection@45ae6fe6
+2026-08-06T15:53:14.007+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Start completed.
+2026-08-06T15:53:14.011+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-4)']
+	Database driver: undefined/unknown
+	Database version: 16.14
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-08-06T15:53:14.027+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-08-06T15:53:14.029+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-08-06T15:53:14.062+05:30  WARN 8313 --- [way2jobs-backend] [  restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-08-06T15:53:14.225+05:30  WARN 8313 --- [way2jobs-backend] [  restartedMain] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 08031758-044e-4a15-934f-9e301077fbf3
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-08-06T15:53:14.226+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-08-06T15:53:14.244+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2026-08-06T15:53:14.300+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2026-08-06T15:53:14.317+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2026-08-06T15:53:14.325+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] c.way2jobs.Way2jobsBackendApplication    : Started Way2jobsBackendApplication in 0.794 seconds (process running for 324.658)
+2026-08-06T15:53:14.327+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation delta:
+
+
+==========================
+CONDITION EVALUATION DELTA
+==========================
+
+
+Positive matches:
+-----------------
+
+   ManagementWebSecurityAutoConfiguration matched:
+      - found 'session' scope (OnWebApplicationCondition)
+      - AllNestedConditions 2 matched 0 did not; NestedCondition on DefaultWebSecurityCondition.Beans @ConditionalOnMissingBean (types: org.springframework.security.web.SecurityFilterChain; SearchStrategy: all) did not find any beans; NestedCondition on DefaultWebSecurityCondition.Classes @ConditionalOnClass found required classes 'org.springframework.security.web.SecurityFilterChain', 'org.springframework.security.config.annotation.web.builders.HttpSecurity' (DefaultWebSecurityCondition)
+
+
+Negative matches:
+-----------------
+
+    None
+
+
+Exclusions:
+-----------
+
+    None
+
+
+Unconditional classes:
+----------------------
+
+    None
+
+
+
+2026-08-06T15:53:16.105+05:30  INFO 8313 --- [way2jobs-backend] [   File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 75 class path changes (75 additions, 0 deletions, 0 modifications)
+2026-08-06T15:53:16.106+05:30  INFO 8313 --- [way2jobs-backend] [      Thread-15] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-08-06T15:53:16.109+05:30  INFO 8313 --- [way2jobs-backend] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-08-06T15:53:16.112+05:30  INFO 8313 --- [way2jobs-backend] [      Thread-15] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-08-06T15:53:16.112+05:30  INFO 8313 --- [way2jobs-backend] [      Thread-15] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Shutdown initiated...
+2026-08-06T15:53:16.119+05:30  INFO 8313 --- [way2jobs-backend] [      Thread-15] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.5.4)
+
+2026-08-06T15:53:16.205+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] c.way2jobs.Way2jobsBackendApplication    : Starting Way2jobsBackendApplication using Java 21.0.11 with PID 8313 (/home/ravitheja/Downloads/way2jobs-backend/target/classes started by ravitheja in /home/ravitheja/Downloads/way2jobs-backend)
+2026-08-06T15:53:16.206+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] c.way2jobs.Way2jobsBackendApplication    : No active profile set, falling back to 1 default profile: "default"
+2026-08-06T15:53:16.403+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-08-06T15:53:16.416+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 12 ms. Found 6 JPA repository interfaces.
+2026-08-06T15:53:16.520+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-08-06T15:53:16.521+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-08-06T15:53:16.521+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.43]
+2026-08-06T15:53:16.534+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-08-06T15:53:16.535+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 328 ms
+2026-08-06T15:53:16.580+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-08-06T15:53:16.582+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-08-06T15:53:16.586+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-08-06T15:53:16.587+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-5 - Starting...
+2026-08-06T15:53:16.609+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-5 - Added connection org.postgresql.jdbc.PgConnection@120c85f1
+2026-08-06T15:53:16.609+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-5 - Start completed.
+2026-08-06T15:53:16.612+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-5)']
+	Database driver: undefined/unknown
+	Database version: 16.14
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-08-06T15:53:16.745+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-08-06T15:53:16.958+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-08-06T15:53:17.109+05:30  WARN 8313 --- [way2jobs-backend] [  restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-08-06T15:53:17.117+05:30  WARN 8313 --- [way2jobs-backend] [  restartedMain] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 964d9d44-d90a-4456-8844-7017520a5899
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-08-06T15:53:17.118+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-08-06T15:53:17.206+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2026-08-06T15:53:17.271+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2026-08-06T15:53:17.281+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2026-08-06T15:53:17.285+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] c.way2jobs.Way2jobsBackendApplication    : Started Way2jobsBackendApplication in 1.1 seconds (process running for 327.619)
+2026-08-06T15:53:17.286+05:30  INFO 8313 --- [way2jobs-backend] [  restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation delta:
+
+
+==========================
+CONDITION EVALUATION DELTA
+==========================
+
+
+Positive matches:
+-----------------
+
+    None
+
+
+Negative matches:
+-----------------
+
+   ManagementWebSecurityAutoConfiguration:
+      Did not match:
+         - AllNestedConditions 1 matched 1 did not; NestedCondition on DefaultWebSecurityCondition.Beans @ConditionalOnMissingBean (types: org.springframework.security.web.SecurityFilterChain; SearchStrategy: all) found beans of type 'org.springframework.security.web.SecurityFilterChain' securityFilterChain; NestedCondition on DefaultWebSecurityCondition.Classes @ConditionalOnClass found required classes 'org.springframework.security.web.SecurityFilterChain', 'org.springframework.security.config.annotation.web.builders.HttpSecurity' (DefaultWebSecurityCondition)
+      Matched:
+         - found 'session' scope (OnWebApplicationCondition)
+
+
+Exclusions:
+-----------
+
+    None
+
+
+Unconditional classes:
+----------------------
+
+    None
+
+
+
+2026-08-06T15:53:50.589+05:30  INFO 8313 --- [way2jobs-backend] [nio-8080-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-08-06T15:53:50.590+05:30  INFO 8313 --- [way2jobs-backend] [nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-08-06T15:53:50.591+05:30  INFO 8313 --- [way2jobs-backend] [nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        s1_0.id,
+        s1_0.name 
+    from
+        states s1_0 
+    order by
+        s1_0.name
+Hibernate: 
+    select
+        j1_0.id,
+        j1_0.apply_url,
+        j1_0.category_id,
+        j1_0.created_at,
+        j1_0.department_id,
+        j1_0.last_date,
+        j1_0.location,
+        j1_0.notification_url,
+        j1_0.qualification,
+        j1_0.salary,
+        j1_0.state_id,
+        j1_0.title,
+        j1_0.vacancies 
+    from
+        jobs j1_0 
+    offset
+        ? rows 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.name 
+    from
+        categories c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        d1_0.id,
+        d1_0.logo_path,
+        d1_0.name,
+        d1_0.official_website,
+        d1_0.short_name 
+    from
+        departments d1_0 
+    where
+        d1_0.id=?
+Hibernate: 
+    select
+        s1_0.id,
+        s1_0.name 
+    from
+        states s1_0 
+    where
+        s1_0.id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.name 
+    from
+        categories c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        d1_0.id,
+        d1_0.logo_path,
+        d1_0.name,
+        d1_0.official_website,
+        d1_0.short_name 
+    from
+        departments d1_0 
+    where
+        d1_0.id=?
+Hibernate: 
+    select
+        s1_0.id,
+        s1_0.name 
+    from
+        states s1_0 
+    where
+        s1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+2026-08-06T15:54:27.229+05:30  WARN 8313 --- [way2jobs-backend] [nio-8080-exec-9] ration$PageModule$WarningLoggingModifier : Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
+	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
+	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
+
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        j1_0.id,
+        j1_0.apply_url,
+        j1_0.category_id,
+        j1_0.created_at,
+        j1_0.department_id,
+        j1_0.last_date,
+        j1_0.location,
+        j1_0.notification_url,
+        j1_0.qualification,
+        j1_0.salary,
+        j1_0.state_id,
+        j1_0.title,
+        j1_0.vacancies 
+    from
+        jobs j1_0 
+    left join
+        states s1_0 
+            on s1_0.id=j1_0.state_id 
+    where
+        s1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.name 
+    from
+        categories c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        d1_0.id,
+        d1_0.logo_path,
+        d1_0.name,
+        d1_0.official_website,
+        d1_0.short_name 
+    from
+        departments d1_0 
+    where
+        d1_0.id=?
+Hibernate: 
+    select
+        s1_0.id,
+        s1_0.name 
+    from
+        states s1_0 
+    where
+        s1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        j1_0.id,
+        j1_0.apply_url,
+        j1_0.category_id,
+        j1_0.created_at,
+        j1_0.department_id,
+        j1_0.last_date,
+        j1_0.location,
+        j1_0.notification_url,
+        j1_0.qualification,
+        j1_0.salary,
+        j1_0.state_id,
+        j1_0.title,
+        j1_0.vacancies 
+    from
+        jobs j1_0 
+    left join
+        states s1_0 
+            on s1_0.id=j1_0.state_id 
+    where
+        s1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.name 
+    from
+        categories c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        d1_0.id,
+        d1_0.logo_path,
+        d1_0.name,
+        d1_0.official_website,
+        d1_0.short_name 
+    from
+        departments d1_0 
+    where
+        d1_0.id=?
+Hibernate: 
+    select
+        s1_0.id,
+        s1_0.name 
+    from
+        states s1_0 
+    where
+        s1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        j1_0.id,
+        j1_0.apply_url,
+        j1_0.category_id,
+        j1_0.created_at,
+        j1_0.department_id,
+        j1_0.last_date,
+        j1_0.location,
+        j1_0.notification_url,
+        j1_0.qualification,
+        j1_0.salary,
+        j1_0.state_id,
+        j1_0.title,
+        j1_0.vacancies 
+    from
+        jobs j1_0 
+    offset
+        ? rows 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.name 
+    from
+        categories c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        d1_0.id,
+        d1_0.logo_path,
+        d1_0.name,
+        d1_0.official_website,
+        d1_0.short_name 
+    from
+        departments d1_0 
+    where
+        d1_0.id=?
+Hibernate: 
+    select
+        s1_0.id,
+        s1_0.name 
+    from
+        states s1_0 
+    where
+        s1_0.id=?
+Hibernate: 
+    select
+        c1_0.id,
+        c1_0.name 
+    from
+        categories c1_0 
+    where
+        c1_0.id=?
+Hibernate: 
+    select
+        d1_0.id,
+        d1_0.logo_path,
+        d1_0.name,
+        d1_0.official_website,
+        d1_0.short_name 
+    from
+        departments d1_0 
+    where
+        d1_0.id=?
+Hibernate: 
+    select
+        s1_0.id,
+        s1_0.name 
+    from
+        states s1_0 
+    where
+        s1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        sj1_0.id 
+    from
+        saved_jobs sj1_0 
+    left join
+        jobs j1_0 
+            on j1_0.id=sj1_0.job_id 
+    where
+        sj1_0.user_id=? 
+        and j1_0.id=? 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.enabled,
+        u1_0.mobile,
+        u1_0.name,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2026-08-06T15:56:13.017+05:30  WARN 8313 --- [way2jobs-backend] [io-8080-exec-10] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [java.lang.IllegalArgumentException: Job list cannot be empty.]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  10:45 min
+[INFO] Finished at: 2026-08-06T15:58:27+05:30
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:3.5.4:run (default-cli) on project way2jobs-backend: Process terminated with exit code: 137 -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException

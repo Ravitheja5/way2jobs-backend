@@ -1,0 +1,16 @@
+package com.way2jobs.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class BulkJobRequest {
+
+	private List<JobRequest> jobs;
+
+}

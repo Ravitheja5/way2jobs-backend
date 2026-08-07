@@ -1,0 +1,15 @@
+backend_error.log
+backend_new.log
+backend_output.log
+backend_run.log
+build.log
+database
+HELP.md
+jar_run.log
+mvnw
+mvnw.cmd
+pom.xml
+runtime.log
+src
+target
+test_write.txt
