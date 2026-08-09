@@ -12,9 +12,9 @@ import lombok.*;
 @Builder
 public class RegisterRequest {
 
-    @NotBlank(message = "Name is required")
-    @Size(min = 3, max = 100, message = "Name must be between 3 and 100 characters")
-    private String name;
+    @NotBlank(message = "Full name is required")
+    @Size(min = 3, max = 100, message = "Full name must be between 3 and 100 characters")
+    private String fullName;
 
     @NotBlank(message = "Email is required")
     @Email(message = "Invalid email")
@@ -23,8 +23,5 @@ public class RegisterRequest {
     @NotBlank(message = "Password is required")
     @Size(min = 6, max = 100, message = "Password must be between 6 and 100 characters")
     private String password;
-
-    @NotBlank(message = "Confirm password is required")
-    private String confirmPassword;
 
 }

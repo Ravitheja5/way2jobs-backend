@@ -16,8 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.ThreadLocalRandom;
-
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -33,19 +31,9 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Email already exists");
         }
 
-        if (!request.getPassword().equals(request.getConfirmPassword())) {
-            throw new RuntimeException("Password and confirm password do not match");
-        }
-
-        // Mobile is no longer collected during registration, but the existing
-        // database column is non-null and unique. Keep that schema unchanged by
-        // assigning an internal placeholder value for new accounts.
-        String mobile = createRegistrationMobile();
-
         User user = User.builder()
-                .name(request.getName())
+                .name(request.getFullName())
                 .email(request.getEmail())
-                .mobile(mobile)
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role("USER")
                 .enabled(true)
@@ -61,14 +49,6 @@ public class UserServiceImpl implements UserService {
                 .role(saved.getRole())
                 .enabled(saved.getEnabled())
                 .build();
-    }
-
-    private String createRegistrationMobile() {
-        String mobile;
-        do {
-            mobile = "9" + String.format("%09d", ThreadLocalRandom.current().nextLong(1_000_000_000L));
-        } while (userRepository.existsByMobile(mobile));
-        return mobile;
     }
 
     @Override
