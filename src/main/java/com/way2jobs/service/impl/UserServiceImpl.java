@@ -1,6 +1,13 @@
 package com.way2jobs.service.impl;
 
-import com.way2jobs.dto.*;
+import com.way2jobs.dto.ChangePasswordRequest;
+import com.way2jobs.dto.ForgotPasswordRequest;
+import com.way2jobs.dto.LoginRequest;
+import com.way2jobs.dto.LoginResponse;
+import com.way2jobs.dto.RegisterRequest;
+import com.way2jobs.dto.ResetPasswordRequest;
+import com.way2jobs.dto.UpdateProfileRequest;
+import com.way2jobs.dto.UserResponse;
 import com.way2jobs.entity.User;
 import com.way2jobs.repository.UserRepository;
 import com.way2jobs.security.JwtUtil;
@@ -111,12 +118,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse updateProfile(String token, RegisterRequest request) {
+    public UserResponse updateProfile(String token, UpdateProfileRequest request) {
 
-        String email = jwtUtil.extractEmail(token);
+        String currentEmail = jwtUtil.extractEmail(token);
 
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByEmail(currentEmail)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!user.getEmail().equalsIgnoreCase(request.getEmail())
+                && userRepository.existsByEmail(request.getEmail())) {
+            throw new RuntimeException("Email already exists");
+        }
+
+        if (!user.getMobile().equals(request.getMobile())
+                && userRepository.existsByMobile(request.getMobile())) {
+            throw new RuntimeException("Mobile already exists");
+        }
+
         user.setName(request.getName());
         user.setEmail(request.getEmail());
         user.setMobile(request.getMobile());
@@ -144,14 +162,14 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
-            throw new RuntimeException("Old Password Incorrect");
+            throw new RuntimeException("Current password is incorrect.");
         }
 
         user.setPassword(passwordEncoder.encode(newPassword));
 
         userRepository.save(user);
 
-        return "Password Changed Successfully";
+        return "Password changed successfully.";
     }
 
     @Override

@@ -23,11 +23,11 @@ public interface UserService {
 
     UserResponse getProfile(String token);
 
-UserResponse updateProfile(String token, RegisterRequest request);
+    UserResponse updateProfile(String token, UpdateProfileRequest request);
 
-String changePassword(String token,
-                      String oldPassword,
-                      String newPassword);
+    String changePassword(String token,
+                          String oldPassword,
+                          String newPassword);
 
 void deleteAccount(String token);
 }

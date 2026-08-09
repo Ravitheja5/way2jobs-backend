@@ -22,5 +22,6 @@ public class JobDetailResponse {
     private LocalDate lastDate;
     private String notificationUrl;
     private String applyUrl;
+    private String stateName;
     private boolean saved;
 }

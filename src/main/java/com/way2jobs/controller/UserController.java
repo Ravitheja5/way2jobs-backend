@@ -1,7 +1,7 @@
 package com.way2jobs.controller;
 
 import com.way2jobs.dto.ChangePasswordRequest;
-import com.way2jobs.dto.RegisterRequest;
+import com.way2jobs.dto.UpdateProfileRequest;
 import com.way2jobs.dto.UserResponse;
 import com.way2jobs.service.UserService;
 import jakarta.validation.Valid;
@@ -27,7 +27,7 @@ public class UserController {
     @PutMapping("/profile")
     public ResponseEntity<UserResponse> updateProfile(
             @RequestHeader("Authorization") String token,
-            @Valid @RequestBody RegisterRequest request) {
+            @Valid @RequestBody UpdateProfileRequest request) {
 
         return ResponseEntity.ok(userService.updateProfile(token, request));
     }

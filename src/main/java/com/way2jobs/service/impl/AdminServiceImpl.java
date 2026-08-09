@@ -7,6 +7,7 @@ import com.way2jobs.entity.Job;
 import com.way2jobs.entity.State;
 import com.way2jobs.service.CategoryService;
 import com.way2jobs.service.DepartmentService;
+import com.way2jobs.service.FirebaseMessagingService;
 import com.way2jobs.service.JobService;
 import com.way2jobs.service.StateService;
 import com.way2jobs.service.AdminService;
@@ -27,8 +28,9 @@ public class AdminServiceImpl implements AdminService {
         private final JobService jobService;
         private final DepartmentService departmentService;
         private final CategoryService categoryService;
-        private final JwtUtil jwtUtil;
         private final StateService stateService;
+        private final FirebaseMessagingService firebaseMessagingService;
+        private final JwtUtil jwtUtil;
 
     @Override
     public AdminLoginResponse login(AdminLoginRequest request) {
@@ -193,7 +195,19 @@ public class AdminServiceImpl implements AdminService {
     }
 
         for (Job j : jobs) {
-                jobService.saveJob(j);
+            Job savedJob = jobService.saveJob(j);
+            if (savedJob != null && savedJob.getId() != null) {
+                firebaseMessagingService.sendNotification(
+                        "New Job Posted",
+                        String.format("%s is now available. Apply now.", savedJob.getTitle()),
+                        savedJob.getId(),
+                        java.util.Map.of(
+                                "title", savedJob.getTitle() == null ? "New Job" : savedJob.getTitle(),
+                                "body", savedJob.getLocation() == null ? "A new job is available" : "A new job is available in " + savedJob.getLocation(),
+                                "jobId", String.valueOf(savedJob.getId())
+                        )
+                );
+            }
         }
         return "Bulk import successful. Total jobs imported: " + jobs.size();
 }
