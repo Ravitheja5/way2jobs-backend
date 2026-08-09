@@ -19,7 +19,7 @@ public class UpdateProfileRequest {
             regexp = "^[A-Za-z]+(?: [A-Za-z]+)?$",
             message = "Name must contain only English alphabets and at most one space"
     )
-    private String name;
+    private String fullName;
 
     @NotBlank(message = "Gmail is required")
     @Email(message = "Enter a valid Gmail address")

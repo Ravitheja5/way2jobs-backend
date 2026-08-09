@@ -134,7 +134,7 @@ public class UserServiceImpl implements UserService {
             user.setMobile(request.getMobile());
         }
 
-        user.setName(request.getName());
+        user.setName(request.getFullName());
         user.setEmail(request.getEmail());
 
         User updated = userRepository.save(user);
