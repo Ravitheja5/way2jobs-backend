@@ -24,4 +24,8 @@ public class JobCardResponse {
     private String notificationUrl;
     private String stateName;
     private boolean saved;
+
+    public String getState() {
+        return stateName;
+    }
 }

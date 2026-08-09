@@ -48,6 +48,8 @@ class JobMapperTest {
         assertThat(response.getLastDate()).isEqualTo(LocalDate.of(2026, 8, 31));
         assertThat(response.getNotificationUrl()).isEqualTo("https://example.com/notify");
         assertThat(response.getApplyUrl()).isEqualTo("https://example.com/apply");
+        assertThat(response.getState()).isEqualTo("Kerala");
+        assertThat(response.getStateName()).isEqualTo("Kerala");
         assertThat(response.isSaved()).isTrue();
     }
 }

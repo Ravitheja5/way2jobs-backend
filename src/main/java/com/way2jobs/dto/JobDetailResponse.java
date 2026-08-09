@@ -24,4 +24,8 @@ public class JobDetailResponse {
     private String applyUrl;
     private String stateName;
     private boolean saved;
+
+    public String getState() {
+        return stateName;
+    }
 }
