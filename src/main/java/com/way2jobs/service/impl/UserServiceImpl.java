@@ -125,14 +125,17 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Email already exists");
         }
 
-        if (!user.getMobile().equals(request.getMobile())
-                && userRepository.existsByMobile(request.getMobile())) {
-            throw new RuntimeException("Mobile already exists");
+        if (request.getMobile() != null) {
+            if (!java.util.Objects.equals(user.getMobile(), request.getMobile())
+                    && userRepository.existsByMobile(request.getMobile())) {
+                throw new RuntimeException("Mobile already exists");
+            }
+
+            user.setMobile(request.getMobile());
         }
 
         user.setName(request.getName());
         user.setEmail(request.getEmail());
-        user.setMobile(request.getMobile());
 
         User updated = userRepository.save(user);
 

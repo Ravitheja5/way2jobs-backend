@@ -29,6 +29,5 @@ public class UpdateProfileRequest {
     )
     private String email;
 
-    @NotBlank(message = "Mobile number is required")
     private String mobile;
 }
