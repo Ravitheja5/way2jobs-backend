@@ -25,7 +25,11 @@ public class JobMapper {
                 .jobId(valueOrEmpty(job.getJobId()))
                 .state(valueOrEmpty(job.getState()))
                 .organization(valueOrEmpty(job.getOrganization()))
-                .postName(valueOrEmpty(job.getPostName()))
+                .postName(
+                        !valueOrEmpty(job.getPostName()).isBlank()
+                                ? valueOrEmpty(job.getPostName())
+                                : valueOrEmpty(job.getTitle())
+                )
                 .vacancies(job.getVacancies())
                 .qualification(valueOrEmpty(job.getQualification()))
                 .salary(valueOrEmpty(job.getSalary()))
@@ -50,7 +54,9 @@ public class JobMapper {
         return toJobDetail(job, false);
     }
 
-    public static JobDetailResponse toJobDetail(Job job, boolean saved) {
+    public static JobDetailResponse toJobDetail(
+            Job job,
+            boolean saved) {
 
         if (job == null) {
             return null;
@@ -61,7 +67,11 @@ public class JobMapper {
                 .jobId(valueOrEmpty(job.getJobId()))
                 .state(valueOrEmpty(job.getState()))
                 .organization(valueOrEmpty(job.getOrganization()))
-                .postName(valueOrEmpty(job.getPostName()))
+                .postName(
+                        !valueOrEmpty(job.getPostName()).isBlank()
+                                ? valueOrEmpty(job.getPostName())
+                                : valueOrEmpty(job.getTitle())
+                )
                 .vacancies(job.getVacancies())
                 .qualification(valueOrEmpty(job.getQualification()))
                 .salary(valueOrEmpty(job.getSalary()))
