@@ -43,10 +43,10 @@ public class FreeJobAlertSource implements JobSource {
         List<ScrapedJob> result = new ArrayList<>();
 
         /*
-         * ---------------------------------------------------------
+         * =========================================================
          * CASE 1:
          * URL itself is a FreeJobAlert ARTICLE
-         * ---------------------------------------------------------
+         * =========================================================
          */
 
         if (isArticlePage(document)) {
@@ -65,15 +65,15 @@ public class FreeJobAlertSource implements JobSource {
         }
 
         /*
-         * ---------------------------------------------------------
+         * =========================================================
          * CASE 2:
          * URL is FreeJobAlert listing page
          *
-         * Example:
+         * Examples:
          * /ap-government-jobs/
          * /telangana-government-jobs/
          * /latest-notifications/
-         * ---------------------------------------------------------
+         * =========================================================
          */
 
         Set<String> articleUrls = new LinkedHashSet<>();
@@ -100,9 +100,9 @@ public class FreeJobAlertSource implements JobSource {
         );
 
         /*
-         * ---------------------------------------------------------
+         * =========================================================
          * Visit each article
-         * ---------------------------------------------------------
+         * =========================================================
          */
 
         for (String articleUrl : articleUrls) {
@@ -240,15 +240,42 @@ public class FreeJobAlertSource implements JobSource {
                     extractDetailsTable(document);
 
             /*
-             * Organization
+             * -----------------------------------------------------
+             * ORGANIZATION
+             * -----------------------------------------------------
+             *
+             * First try "Company Name".
+             *
+             * If Company Name is empty, extract organization
+             * from title.
+             *
+             * Example:
+             *
+             * MANUU - Lecturer Recruitment 2026
+             *                 ↓
+             * MANUU
+             *
+             * APCOB - Apprentices Recruitment 2026
+             *                 ↓
+             * APCOB
              */
 
-            job.setOrganizationName(
-                    details.get("company name")
-            );
+            String organization =
+                    details.get("company name");
+
+            if (blank(organization)) {
+                organization =
+                        extractOrganizationFromTitle(
+                                job.getTitle()
+                        );
+            }
+
+            job.setOrganizationName(organization);
 
             /*
-             * Post Name
+             * -----------------------------------------------------
+             * POST NAME
+             * -----------------------------------------------------
              */
 
             job.setPostName(
@@ -256,7 +283,9 @@ public class FreeJobAlertSource implements JobSource {
             );
 
             /*
-             * Qualification
+             * -----------------------------------------------------
+             * QUALIFICATION
+             * -----------------------------------------------------
              */
 
             job.setQualification(
@@ -264,7 +293,9 @@ public class FreeJobAlertSource implements JobSource {
             );
 
             /*
-             * Vacancies
+             * -----------------------------------------------------
+             * VACANCIES
+             * -----------------------------------------------------
              */
 
             job.setVacanciesRaw(
@@ -404,8 +435,8 @@ public class FreeJobAlertSource implements JobSource {
             }
 
             /*
-             * If organization is empty,
-             * don't incorrectly use the title.
+             * If organization is still empty,
+             * keep it empty.
              */
 
             if (blank(job.getOrganizationName())) {
@@ -424,6 +455,44 @@ public class FreeJobAlertSource implements JobSource {
 
             return null;
         }
+    }
+
+    /*
+     * =========================================================
+     * EXTRACT ORGANIZATION FROM TITLE
+     * =========================================================
+     */
+
+    private String extractOrganizationFromTitle(String title) {
+
+        if (blank(title)) {
+            return "";
+        }
+
+        String value = title.trim();
+
+        /*
+         * Example:
+         *
+         * MANUU - Lecturer Recruitment 2026
+         *        ↑
+         * organization = MANUU
+         */
+
+        if (value.contains(" - ")) {
+
+            String organization =
+                    value.substring(
+                            0,
+                            value.indexOf(" - ")
+                    ).trim();
+
+            if (!organization.isBlank()) {
+                return organization;
+            }
+        }
+
+        return "";
     }
 
     /*
@@ -545,8 +614,8 @@ public class FreeJobAlertSource implements JobSource {
 
                     if (text.contains(keyword)
                             || href.toLowerCase(
-                            Locale.ROOT
-                    ).contains(".pdf")) {
+                                    Locale.ROOT
+                            ).contains(".pdf")) {
 
                         return href;
                     }
