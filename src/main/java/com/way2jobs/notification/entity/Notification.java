@@ -1,0 +1,3 @@
+package com.way2jobs.notification.entity;
+import com.way2jobs.entity.Job; import jakarta.persistence.*; import lombok.*; import java.time.LocalDateTime;
+@Entity @Table(name="notifications") @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder public class Notification { @Id @GeneratedValue(strategy=GenerationType.IDENTITY) private Long id; @Column(nullable=false,length=200) private String title; @Column(columnDefinition="TEXT") private String body; @ManyToOne @JoinColumn(name="job_id") private Job job; @Column(length=40) private String type; private LocalDateTime createdAt; @PrePersist public void prePersist(){if(createdAt==null)createdAt=LocalDateTime.now();} }

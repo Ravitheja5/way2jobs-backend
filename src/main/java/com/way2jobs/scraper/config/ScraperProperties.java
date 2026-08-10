@@ -1,0 +1,3 @@
+package com.way2jobs.scraper.config;
+import lombok.Data; import org.springframework.boot.context.properties.ConfigurationProperties; import java.util.LinkedHashMap; import java.util.Map;
+@Data @ConfigurationProperties(prefix = "way2jobs.scraper") public class ScraperProperties { private boolean enabled=false, scheduleEnabled=false, skipExpired=true, notifyOnNewJobs=true; private String cron="0 0 6,18 * * *", userAgent="Way2JobsBot/1.0 (+contact@way2jobs.example)", defaultCategoryName="Other", fallbackDepartmentName=""; private int timeoutMs=20000, maxJobsPerRun=200; private long politeDelayMs=2500; private Map<String,String> sources=new LinkedHashMap<>(), departmentAliases=new LinkedHashMap<>(); }

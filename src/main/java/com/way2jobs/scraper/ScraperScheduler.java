@@ -1,0 +1,3 @@
+package com.way2jobs.scraper;
+import lombok.RequiredArgsConstructor; import lombok.extern.slf4j.Slf4j; import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty; import org.springframework.scheduling.annotation.Scheduled; import org.springframework.stereotype.Component;
+@Component @RequiredArgsConstructor @Slf4j @ConditionalOnProperty(name="way2jobs.scraper.schedule-enabled",havingValue="true") public class ScraperScheduler {private final JobScraperService service;@Scheduled(cron="${way2jobs.scraper.cron}",zone="Asia/Kolkata") public void runScheduled(){try{service.run();}catch(Exception e){log.warn("scheduled scraper run failed",e);}}}
