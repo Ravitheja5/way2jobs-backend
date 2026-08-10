@@ -74,39 +74,38 @@ public class ScraperPersistenceService {
                 return new Duplicate();
             }
 
-            Job job = Job.builder()
-                    .title(s.getTitle())
-                    .organization(s.getOrganizationName())
-                    .qualification(s.getQualification())
-                    .vacancies(parseVacancies(s.getVacanciesRaw()))
-                    .salary(s.getSalary())
-                    .location(s.getLocation())
-                    .lastDate(date)
-
-                    // Current Job fields
-                    .pdfNotification(s.getNotificationUrl())
-                    .applyLink(s.getApplyUrl())
-
-                    .officialWebsite(
-                            s.getSourceUrl() != null
-                                    ? s.getSourceUrl()
-                                    : null
-                    )
-
-                    .category(
-                            category != null
-                                    ? category.getName()
-                                    : null
-                    )
-
-                    .state(
-                            state != null
-                                    ? state.getName()
-                                    : null
-                    )
-
-                    .source(s.getSourceUrl())
-                    .build();
+           Job job = Job.builder()
+        .title(s.getTitle())
+        .organization(s.getOrganizationName())
+        .postName(
+                s.getPostName() != null && !s.getPostName().isBlank()
+                        ? s.getPostName()
+                        : s.getTitle()
+        )
+        .qualification(s.getQualification())
+        .vacancies(parseVacancies(s.getVacanciesRaw()))
+        .salary(s.getSalary())
+        .location(s.getLocation())
+        .lastDate(date)
+        .pdfNotification(s.getNotificationUrl())
+        .applyLink(s.getApplyUrl())
+        .officialWebsite(
+                s.getSourceUrl() != null
+                        ? s.getSourceUrl()
+                        : null
+        )
+        .category(
+                category != null
+                        ? category.getName()
+                        : null
+        )
+        .state(
+                state != null
+                        ? state.getName()
+                        : null
+        )
+        .source(s.getSourceUrl())
+        .build();
 
             Job savedJob = jobService.saveJob(job);
 

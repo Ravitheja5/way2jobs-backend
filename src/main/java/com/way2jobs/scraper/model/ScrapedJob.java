@@ -9,6 +9,8 @@ public class ScrapedJob {
 
     private String organizationName;
 
+    private String postName;
+
     private String qualification;
 
     private String vacanciesRaw;
