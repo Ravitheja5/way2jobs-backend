@@ -9,10 +9,6 @@ import java.time.LocalDate;
 
 public interface JobRepository extends JpaRepository<Job, Long> {
 
-    // =========================
-    // STATE FILTERING
-    // =========================
-
     Page<Job> findByStateIgnoreCaseAndIsActiveTrue(
             String state,
             Pageable pageable
@@ -27,10 +23,6 @@ public interface JobRepository extends JpaRepository<Job, Long> {
             String state,
             Pageable pageable
     );
-
-    // =========================
-    // DUPLICATE CHECKS
-    // =========================
 
     boolean existsByPdfNotificationIgnoreCase(
             String pdfNotification
