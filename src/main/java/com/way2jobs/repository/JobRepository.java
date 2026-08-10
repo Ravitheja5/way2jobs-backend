@@ -6,7 +6,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
-import java.util.List;
 
 public interface JobRepository extends JpaRepository<Job, Long> {
 
@@ -25,20 +24,6 @@ public interface JobRepository extends JpaRepository<Job, Long> {
     );
 
     Page<Job> findByState(
-            String state,
-            Pageable pageable
-    );
-
-    Page<Job> findByStateId(
-            Long stateId,
-            Pageable pageable
-    );
-
-    List<Job> findByStateNameIgnoreCase(
-            String state
-    );
-
-    Page<Job> findByStateNameIgnoreCase(
             String state,
             Pageable pageable
     );
