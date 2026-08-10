@@ -27,7 +27,6 @@ public class JobController {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
 
-
     // =========================================================
     // CREATE JOB
     // =========================================================
@@ -37,7 +36,6 @@ public class JobController {
     public Job createJob(@RequestBody Job job) {
         return jobService.saveJob(job);
     }
-
 
     // =========================================================
     // GET ALL JOBS
@@ -70,7 +68,6 @@ public class JobController {
         return ResponseEntity.ok(response);
     }
 
-
     // =========================================================
     // GET JOB BY ID
     // =========================================================
@@ -99,7 +96,6 @@ public class JobController {
         );
     }
 
-
     // =========================================================
     // UPDATE JOB
     // =========================================================
@@ -112,7 +108,6 @@ public class JobController {
         return jobService.updateJob(id, job);
     }
 
-
     // =========================================================
     // DELETE JOB
     // =========================================================
@@ -123,7 +118,6 @@ public class JobController {
 
         jobService.deleteJob(id);
     }
-
 
     // =========================================================
     // GET JOBS BY STATE
@@ -160,7 +154,6 @@ public class JobController {
         return ResponseEntity.ok(response);
     }
 
-
     // =========================================================
     // GET ALL INDIA JOBS
     // =========================================================
@@ -191,7 +184,6 @@ public class JobController {
 
         return ResponseEntity.ok(response);
     }
-
 
     // =========================================================
     // CHECK WHETHER JOB IS SAVED

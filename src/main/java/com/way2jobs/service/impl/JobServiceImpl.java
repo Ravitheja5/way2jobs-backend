@@ -100,9 +100,15 @@ public class JobServiceImpl implements JobService {
             String state,
             Pageable pageable
     ) {
+        if (state == null || state.isBlank() || "All India".equalsIgnoreCase(state.trim())) {
+            return getAllIndiaJobs(pageable);
+        }
 
-        return jobRepository.findByStateIgnoreCase(
-                state,
+        String normalizedState = state.trim();
+        
+        // Use 'containing' for better matching (handles things like "Andhra Pradesh" matching "AndhraPradesh" or "AP" matching "AP Govt")
+        return jobRepository.findByStateContainingIgnoreCase(
+                normalizedState,
                 pageable
         );
     }

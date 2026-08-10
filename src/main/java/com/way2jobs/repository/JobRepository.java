@@ -19,7 +19,7 @@ public interface JobRepository extends JpaRepository<Job, Long> {
             Pageable pageable
     );
 
-    Page<Job> findByState(
+    Page<Job> findByStateContainingIgnoreCase(
             String state,
             Pageable pageable
     );

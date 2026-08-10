@@ -61,10 +61,7 @@ public class ScraperPersistenceService {
                     && jobs.existsByPdfNotificationIgnoreCase(
                     s.getNotificationUrl()))
 
-                    || (s.getApplyUrl() != null
-                    && !s.getApplyUrl().isBlank()
-                    && jobs.existsByApplyLinkIgnoreCase(
-                    s.getApplyUrl()))
+                   
 
                     || jobs.existsByTitleIgnoreCaseAndLocationIgnoreCaseAndLastDateAndCategoryIgnoreCaseAndStateIgnoreCase(
                     s.getTitle(),
