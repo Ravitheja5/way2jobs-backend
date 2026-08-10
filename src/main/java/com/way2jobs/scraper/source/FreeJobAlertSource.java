@@ -22,51 +22,54 @@ public class FreeJobAlertSource implements JobSource {
                     Pattern.CASE_INSENSITIVE
             );
 
-
     @Override
     public String name() {
         return "FreeJobAlert";
     }
 
-
     @Override
     public List<ScrapedJob> fetch(
-            String state,
+            String stateName,
             String url,
             ScraperProperties props
     ) throws Exception {
 
-        Document d = Jsoup.connect(url)
+        Document document = Jsoup.connect(url)
                 .userAgent(props.getUserAgent())
                 .timeout(props.getTimeoutMs())
                 .get();
 
-        List<ScrapedJob> out = new ArrayList<>();
+        List<ScrapedJob> jobs = new ArrayList<>();
 
-        boolean found = false;
+        boolean foundTable = false;
 
+        for (Element table : document.select("table")) {
 
-        for (Element table : d.select("table")) {
-
-            Element header =
-                    table.selectFirst("tr:has(th)");
+            Element header = table.selectFirst("tr");
 
             if (header == null) {
                 continue;
             }
 
+            Map<String, Integer> columns = detectColumns(header);
 
-            Map<String, Integer> cols =
-                    columns(header);
+            /*
+             * FreeJobAlert current table structure:
+             *
+             * Post Date
+             * Job Title
+             * Post name
+             * Vacancies
+             * Qualification
+             * Last Date
+             * Notification
+             */
 
-
-            if (!cols.containsKey("title")) {
+            if (!columns.containsKey("title")) {
                 continue;
             }
 
-
-            found = true;
-
+            foundTable = true;
 
             for (Element row : table.select("tr")) {
 
@@ -74,27 +77,25 @@ public class FreeJobAlertSource implements JobSource {
                     continue;
                 }
 
-
                 try {
 
                     List<Element> cells =
                             row.select("> td");
 
+                    if (cells.isEmpty()) {
+                        continue;
+                    }
 
-                    if (!cells.isEmpty()) {
+                    ScrapedJob job =
+                            parseRow(
+                                    cells,
+                                    columns,
+                                    stateName,
+                                    url
+                            );
 
-                        ScrapedJob job =
-                                parseRow(
-                                        cells,
-                                        cols,
-                                        state,
-                                        url
-                                );
-
-
-                        if (job != null) {
-                            out.add(job);
-                        }
+                    if (job != null) {
+                        jobs.add(job);
                     }
 
                 } catch (Exception e) {
@@ -108,431 +109,526 @@ public class FreeJobAlertSource implements JobSource {
             }
         }
 
-
-        if (!found) {
+        if (!foundTable) {
 
             log.warn(
-                    "No recognised result table found at {}",
+                    "No recognised FreeJobAlert job table found at {}",
                     url
             );
         }
 
+        log.info(
+                "FreeJobAlert source {} returned {} jobs",
+                url,
+                jobs.size()
+        );
 
-        return out;
+        return jobs;
     }
 
+    /**
+     * Detect columns from FreeJobAlert table header.
+     */
+    private Map<String, Integer> detectColumns(Element header) {
 
-    // =========================================================
-    // FIND TABLE COLUMNS
-    // =========================================================
-
-    private Map<String, Integer> columns(
-            Element header
-    ) {
-
-        Map<String, Integer> map =
+        Map<String, Integer> columns =
                 new HashMap<>();
-
 
         List<Element> headers =
                 header.select("> th, > td");
 
-
         for (int i = 0; i < headers.size(); i++) {
 
             String text =
-                    headers.get(i)
-                            .text()
-                            .toLowerCase(Locale.ROOT);
+                    normalize(headers.get(i).text());
 
+            /*
+             * Job Title
+             */
+            if ((text.equals("job title")
+                    || text.contains("job title")
+                    || text.equals("title"))
+                    && !columns.containsKey("title")) {
 
-            if (
-                    (text.contains("title")
-                            || text.contains("post"))
-                            && !map.containsKey("title")
-            ) {
-
-                map.put("title", i);
+                columns.put("title", i);
             }
 
+            /*
+             * Post Name
+             */
+            if ((text.equals("post name")
+                    || text.contains("post name")
+                    || text.equals("post"))
+                    && !columns.containsKey("postName")) {
 
-            if (
-                    (text.contains("qualification")
-                            || text.contains("eligibility"))
-                            && !map.containsKey("qualification")
-            ) {
-
-                map.put("qualification", i);
+                columns.put("postName", i);
             }
 
+            /*
+             * Vacancies
+             */
+            if ((text.contains("vacanc")
+                    || text.contains("no of post")
+                    || text.contains("number of post"))
+                    && !columns.containsKey("vacancies")) {
 
-            if (
-                    (text.contains("last date")
-                            || text.contains("last dt")
-                            || text.contains("closing"))
-                            && !map.containsKey("lastDate")
-            ) {
-
-                map.put("lastDate", i);
+                columns.put("vacancies", i);
             }
 
+            /*
+             * Qualification
+             */
+            if ((text.contains("qualification")
+                    || text.contains("eligibility"))
+                    && !columns.containsKey("qualification")) {
 
-            if (
-                    (text.contains("apply")
-                            || text.contains("notification")
-                            || text.contains("details")
-                            || text.contains("more info"))
-                            && !map.containsKey("link")
-            ) {
-
-                map.put("link", i);
+                columns.put("qualification", i);
             }
 
+            /*
+             * Last Date
+             */
+            if ((text.contains("last date")
+                    || text.contains("last dt")
+                    || text.contains("closing"))
+                    && !columns.containsKey("lastDate")) {
 
-            if (
-                    (text.contains("vacancy")
-                            || text.contains("vacancies"))
-                            && !map.containsKey("vacancies")
-            ) {
+                columns.put("lastDate", i);
+            }
 
-                map.put("vacancies", i);
+            /*
+             * Notification / Details
+             */
+            if ((text.contains("notification")
+                    || text.contains("details")
+                    || text.contains("apply")
+                    || text.contains("more info"))
+                    && !columns.containsKey("link")) {
+
+                columns.put("link", i);
             }
         }
 
-
-        return map;
+        return columns;
     }
 
-
-    // =========================================================
-    // PARSE ROW
-    // =========================================================
-
+    /**
+     * Convert one HTML table row into ScrapedJob.
+     */
     private ScrapedJob parseRow(
             List<Element> cells,
             Map<String, Integer> columns,
-            String state,
-            String source
+            String stateName,
+            String sourceUrl
     ) {
 
-        Element titleElement =
-                cell(
+        Element titleCell =
+                getCell(
                         cells,
                         columns.get("title")
                 );
 
-
-        if (titleElement == null) {
+        if (titleCell == null) {
             return null;
         }
 
+        String sourceTitle =
+                clean(titleCell.text());
 
-        String title =
-                titleElement.text().trim();
+        if (sourceTitle == null
+                || sourceTitle.isBlank()) {
 
-
-        if (title.isBlank()) {
             return null;
         }
-
 
         ScrapedJob job =
                 new ScrapedJob();
 
-
-        // -----------------------------------------------------
-        // TITLE
-        // -----------------------------------------------------
-
-        job.setTitle(title);
-
-
-        // -----------------------------------------------------
-        // ORGANIZATION
-        // -----------------------------------------------------
-
+        /*
+         * -----------------------------------------
+         * ORGANIZATION
+         * -----------------------------------------
+         *
+         * Example:
+         *
+         * MANUU Vacancy 2026 - 2 Lecturer Posts
+         *
+         * Organization:
+         * MANUU
+         *
+         * Another:
+         *
+         * AIIMS Mangalagiri Vacancy 2026 - ...
+         *
+         * Organization:
+         * AIIMS Mangalagiri
+         */
         String organization =
-                extractOrganizationFromTitle(title);
-
+                extractOrganization(sourceTitle);
 
         job.setOrganizationName(
                 organization
         );
 
+        /*
+         * -----------------------------------------
+         * POST NAME
+         * -----------------------------------------
+         */
+        String postName =
+                text(
+                        getCell(
+                                cells,
+                                columns.get("postName")
+                        )
+                );
 
-        // -----------------------------------------------------
-        // QUALIFICATION
-        // -----------------------------------------------------
+        job.setPostName(postName);
 
+        /*
+         * -----------------------------------------
+         * TITLE
+         * -----------------------------------------
+         *
+         * Use clean application title:
+         *
+         * MANUU - Lecturer Recruitment 2026
+         */
+        job.setTitle(
+                buildTitle(
+                        organization,
+                        postName,
+                        sourceTitle
+                )
+        );
+
+        /*
+         * -----------------------------------------
+         * QUALIFICATION
+         * -----------------------------------------
+         */
         job.setQualification(
                 text(
-                        cell(
+                        getCell(
                                 cells,
                                 columns.get("qualification")
                         )
                 )
         );
 
+        /*
+         * -----------------------------------------
+         * VACANCIES
+         * -----------------------------------------
+         */
+        String vacancies =
+                text(
+                        getCell(
+                                cells,
+                                columns.get("vacancies")
+                        )
+                );
 
-        // -----------------------------------------------------
-        // LAST DATE
-        // -----------------------------------------------------
+        if (vacancies == null
+                || vacancies.isBlank()) {
 
+            Matcher matcher =
+                    VACANCIES.matcher(sourceTitle);
+
+            if (matcher.find()) {
+                vacancies =
+                        matcher.group(1);
+            }
+        }
+
+        job.setVacanciesRaw(vacancies);
+
+        /*
+         * -----------------------------------------
+         * LAST DATE
+         * -----------------------------------------
+         */
         job.setLastDateRaw(
                 text(
-                        cell(
+                        getCell(
                                 cells,
                                 columns.get("lastDate")
                         )
                 )
         );
 
-
-        // -----------------------------------------------------
-        // VACANCIES
-        // -----------------------------------------------------
-
-        String vacancies =
-                text(
-                        cell(
-                                cells,
-                                columns.get("vacancies")
-                        )
-                );
-
-
-        if (
-                vacancies == null
-                        || vacancies.isBlank()
-        ) {
-
-            Matcher matcher =
-                    VACANCIES.matcher(title);
-
-
-            if (matcher.find()) {
-
-                vacancies =
-                        matcher.group(1);
-            }
-        }
-
-
-        job.setVacanciesRaw(
-                vacancies
-        );
-
-
-        // -----------------------------------------------------
-        // LINK
-        // -----------------------------------------------------
-
+        /*
+         * -----------------------------------------
+         * NOTIFICATION URL
+         * -----------------------------------------
+         */
         Element link =
-                Optional.ofNullable(
-                        cell(
-                                cells,
-                                columns.get("link")
-                        )
-                )
-                .map(
-                        e -> e.selectFirst(
-                                "a[href]"
-                        )
-                )
-                .orElse(null);
-
-
-        // fallback: find first link
-        if (link == null) {
-
-            link =
-                    cells.stream()
-                            .map(
-                                    e -> e.selectFirst(
-                                            "a[href]"
-                                    )
-                            )
-                            .filter(
-                                    Objects::nonNull
-                            )
-                            .findFirst()
-                            .orElse(null);
-        }
-
+                extractLink(
+                        cells,
+                        columns.get("link")
+                );
 
         if (link != null) {
 
             String href =
                     link.absUrl("href");
 
+            if (href != null
+                    && !href.isBlank()) {
 
-            if (
-                    href != null
-                            && !href.isBlank()
-            ) {
+                job.setNotificationUrl(href);
 
-                job.setNotificationUrl(
-                        href
-                );
-
-                job.setApplyUrl(
-                        href
-                );
+                /*
+                 * Currently FreeJobAlert gives
+                 * the details/notification link.
+                 *
+                 * Validation will use this URL
+                 * for both fields if required.
+                 */
+                job.setApplyUrl(href);
             }
         }
 
+        /*
+         * -----------------------------------------
+         * SOURCE INFORMATION
+         * -----------------------------------------
+         */
+        job.setSourceStateName(stateName);
 
-        // -----------------------------------------------------
-        // SOURCE INFORMATION
-        // -----------------------------------------------------
-
-        job.setSourceStateName(
-                state
-        );
-
-        job.setSourceUrl(
-                source
-        );
-
-
-        log.info(
-                "Scraped job: title='{}', organization='{}'",
-                job.getTitle(),
-                job.getOrganizationName()
-        );
-
+        job.setSourceUrl(sourceUrl);
 
         return job;
     }
 
-
-    // =========================================================
-    // ORGANIZATION EXTRACTION
-    // =========================================================
-
-    private String extractOrganizationFromTitle(
-            String title
+    /**
+     * Extract organization from Job Title.
+     *
+     * Examples:
+     *
+     * MANUU Vacancy 2026 - 2 Lecturer Posts
+     * -> MANUU
+     *
+     * AIIMS Mangalagiri Vacancy 2026 - 4 Posts
+     * -> AIIMS Mangalagiri
+     *
+     * DSH Kadapa Vacancy 2026 - ...
+     * -> DSH Kadapa
+     */
+    private String extractOrganization(
+            String sourceTitle
     ) {
 
-        if (
-                title == null
-                        || title.isBlank()
-        ) {
+        if (sourceTitle == null
+                || sourceTitle.isBlank()) {
 
             return "";
         }
 
+        String title =
+                sourceTitle.trim();
 
-        String value =
-                title.trim();
+        /*
+         * Main pattern:
+         *
+         * XYZ Vacancy 2026
+         */
+        Pattern pattern =
+                Pattern.compile(
+                        "^(.+?)\\s+Vacancy\\b",
+                        Pattern.CASE_INSENSITIVE
+                );
 
+        Matcher matcher =
+                pattern.matcher(title);
 
-        // -----------------------------------------------------
-        // Example:
-        //
-        // MANUU - Lecturer Recruitment 2026
-        //
-        // -> MANUU
-        // -----------------------------------------------------
+        if (matcher.find()) {
 
-        if (value.contains(" - ")) {
+            return clean(
+                    matcher.group(1)
+            );
+        }
 
-            String firstPart =
-                    value.substring(
+        /*
+         * Fallback:
+         *
+         * XYZ Recruitment 2026
+         */
+        pattern =
+                Pattern.compile(
+                        "^(.+?)\\s+Recruitment\\b",
+                        Pattern.CASE_INSENSITIVE
+                );
+
+        matcher =
+                pattern.matcher(title);
+
+        if (matcher.find()) {
+
+            return clean(
+                    matcher.group(1)
+            );
+        }
+
+        /*
+         * If nothing matches, use first part
+         * before '-' as fallback.
+         */
+        int dash =
+                title.indexOf('-');
+
+        if (dash > 0) {
+
+            return clean(
+                    title.substring(
                             0,
-                            value.indexOf(" - ")
-                    ).trim();
-
-
-            if (!firstPart.isBlank()) {
-
-                return firstPart;
-            }
-        }
-
-
-        // -----------------------------------------------------
-        // Example:
-        //
-        // AIIMS Mangalagiri Lecturer Recruitment
-        //
-        // -> AIIMS Mangalagiri
-        // -----------------------------------------------------
-
-        String lower =
-                value.toLowerCase(
-                        Locale.ROOT
-                );
-
-
-        List<String> knownOrganizations =
-                List.of(
-                        "MANUU",
-                        "APCOB",
-                        "AIIMS Mangalagiri",
-                        "DSH Kadapa",
-                        "ANGRAU",
-                        "IREL",
-                        "SVIMS Tirupati",
-                        "SVIMS",
-                        "Visakhapatnam Port Authority",
-                        "Narasapuram Area Hospital"
-                );
-
-
-        for (
-                String organization :
-                knownOrganizations
-        ) {
-
-            if (
-                    lower.startsWith(
-                            organization.toLowerCase(
-                                    Locale.ROOT
-                            )
+                            dash
                     )
-            ) {
-
-                return organization;
-            }
+            );
         }
 
-
-        // -----------------------------------------------------
-        // If organization cannot be extracted
-        // -----------------------------------------------------
-
-        return "";
+        return title;
     }
 
+    /**
+     * Build clean application title.
+     */
+    private String buildTitle(
+            String organization,
+            String postName,
+            String sourceTitle
+    ) {
 
-    // =========================================================
-    // CELL
-    // =========================================================
+        if (organization != null
+                && !organization.isBlank()
+                && postName != null
+                && !postName.isBlank()) {
 
-    private Element cell(
+            /*
+             * Extract year if available.
+             */
+            Matcher yearMatcher =
+                    Pattern.compile(
+                            "\\b(20\\d{2})\\b"
+                    ).matcher(sourceTitle);
+
+            String year = "";
+
+            if (yearMatcher.find()) {
+                year =
+                        " " + yearMatcher.group(1);
+            }
+
+            return organization.trim()
+                    + " - "
+                    + postName.trim()
+                    + " Recruitment"
+                    + year;
+        }
+
+        /*
+         * Fallback to original source title.
+         */
+        return sourceTitle;
+    }
+
+    /**
+     * Find link inside specified cell.
+     * If notification column has no link,
+     * search all cells.
+     */
+    private Element extractLink(
             List<Element> cells,
             Integer index
     ) {
 
-        return index != null
+        if (index != null
                 && index >= 0
-                && index < cells.size()
-                ? cells.get(index)
-                : null;
+                && index < cells.size()) {
+
+            Element link =
+                    cells.get(index)
+                            .selectFirst("a[href]");
+
+            if (link != null) {
+                return link;
+            }
+        }
+
+        /*
+         * Fallback:
+         * search entire row.
+         */
+        for (Element cell : cells) {
+
+            Element link =
+                    cell.selectFirst("a[href]");
+
+            if (link != null) {
+                return link;
+            }
+        }
+
+        return null;
     }
 
-
-    // =========================================================
-    // TEXT
-    // =========================================================
-
-    private String text(
-            Element element
+    private Element getCell(
+            List<Element> cells,
+            Integer index
     ) {
 
-        return element == null
+        if (index == null) {
+            return null;
+        }
+
+        if (index < 0
+                || index >= cells.size()) {
+
+            return null;
+        }
+
+        return cells.get(index);
+    }
+
+    private String text(Element element) {
+
+        if (element == null) {
+            return null;
+        }
+
+        String value =
+                element.text();
+
+        return clean(value);
+    }
+
+    private String clean(String value) {
+
+        if (value == null) {
+            return null;
+        }
+
+        String cleaned =
+                value
+                        .replace('\u00A0', ' ')
+                        .replaceAll("\\s+", " ")
+                        .trim();
+
+        return cleaned.isBlank()
                 ? null
-                : element.text().trim();
+                : cleaned;
+    }
+
+    private String normalize(String value) {
+
+        String cleaned =
+                clean(value);
+
+        if (cleaned == null) {
+            return "";
+        }
+
+        return cleaned
+                .toLowerCase(Locale.ROOT);
     }
 }
