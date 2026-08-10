@@ -2,7 +2,6 @@ package com.way2jobs.service.impl;
 
 import com.way2jobs.entity.Job;
 import com.way2jobs.repository.JobRepository;
-import com.way2jobs.repository.StateRepository;
 import com.way2jobs.service.JobService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,7 +16,6 @@ import java.util.Optional;
 public class JobServiceImpl implements JobService {
 
     private final JobRepository jobRepository;
-    private final StateRepository stateRepository;
 
     @Override
     public Job saveJob(Job job) {
@@ -38,19 +36,32 @@ public class JobServiceImpl implements JobService {
     public Job updateJob(Long id, Job job) {
 
         Job existingJob = jobRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Job not found with id: " + id));
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "Job not found with id: " + id
+                        )
+                );
 
+        existingJob.setJobId(job.getJobId());
         existingJob.setTitle(job.getTitle());
-        existingJob.setQualification(job.getQualification());
+        existingJob.setOrganization(job.getOrganization());
+        existingJob.setPostName(job.getPostName());
         existingJob.setVacancies(job.getVacancies());
+        existingJob.setQualification(job.getQualification());
         existingJob.setSalary(job.getSalary());
         existingJob.setLocation(job.getLocation());
         existingJob.setLastDate(job.getLastDate());
-        existingJob.setNotificationUrl(job.getNotificationUrl());
-        existingJob.setApplyUrl(job.getApplyUrl());
-        existingJob.setDepartment(job.getDepartment());
+        existingJob.setApplyLink(job.getApplyLink());
+        existingJob.setPdfNotification(job.getPdfNotification());
+        existingJob.setOfficialWebsite(job.getOfficialWebsite());
         existingJob.setCategory(job.getCategory());
         existingJob.setState(job.getState());
+        existingJob.setSelectionProcess(job.getSelectionProcess());
+        existingJob.setAgeLimit(job.getAgeLimit());
+        existingJob.setApplicationFee(job.getApplicationFee());
+        existingJob.setExperience(job.getExperience());
+        existingJob.setIsActive(job.getIsActive());
+        existingJob.setSource(job.getSource());
 
         return jobRepository.save(existingJob);
     }
@@ -59,34 +70,81 @@ public class JobServiceImpl implements JobService {
     public void deleteJob(Long id) {
 
         if (!jobRepository.existsById(id)) {
-            throw new RuntimeException("Job not found with id: " + id);
+            throw new RuntimeException(
+                    "Job not found with id: " + id
+            );
         }
 
         jobRepository.deleteById(id);
     }
 
+    /*
+     * JobService interface method
+     */
     @Override
-    public List<Job> getJobsByState(Long stateId) {
-        return jobRepository.findByStateId(stateId);
+    public List<Job> getJobsByState(String state) {
+
+        return jobRepository.findByStateIgnoreCase(
+                state,
+                Pageable.unpaged()
+        ).getContent();
+    }
+
+    /*
+     * Pagination version
+     *
+     * Do NOT add @Override unless this method exists
+     * in JobService interface.
+     */
+    public Page<Job> getJobsByState(
+            String state,
+            Pageable pageable
+    ) {
+
+        return jobRepository.findByStateIgnoreCase(
+                state,
+                pageable
+        );
     }
 
     @Override
     public List<Job> getAllIndiaJobs() {
-        return jobRepository.findByStateNameIgnoreCase("All India");
+
+        return jobRepository.findByStateIgnoreCase(
+                "All India",
+                Pageable.unpaged()
+        ).getContent();
     }
 
     @Override
     public Page<Job> getJobs(Pageable pageable) {
+
         return jobRepository.findAll(pageable);
     }
 
-    @Override
-    public Page<Job> getJobsByState(Long stateId, Pageable pageable) {
-        return jobRepository.findByStateId(stateId, pageable);
+    /*
+     * State ID method is intentionally NOT @Override.
+     *
+     * Your current Job entity stores state as String,
+     * not State entity.
+     */
+    public Page<Job> getJobsByState(
+            Long stateId,
+            Pageable pageable
+    ) {
+
+        throw new UnsupportedOperationException(
+                "State ID filtering is not supported. " +
+                "Job entity currently stores state as String."
+        );
     }
 
     @Override
     public Page<Job> getAllIndiaJobs(Pageable pageable) {
-        return jobRepository.findByStateNameIgnoreCase("All India", pageable);
+
+        return jobRepository.findByStateIgnoreCase(
+                "All India",
+                pageable
+        );
     }
 }

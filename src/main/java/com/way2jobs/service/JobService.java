@@ -19,13 +19,18 @@ public interface JobService {
 
     void deleteJob(Long id);
 
-    List<Job> getJobsByState(Long stateId);
+    List<Job> getJobsByState(String state);
 
     List<Job> getAllIndiaJobs();
 
     Page<Job> getJobs(Pageable pageable);
 
-    Page<Job> getJobsByState(Long stateId, Pageable pageable);
+    Page<Job> getJobsByState(
+            String state,
+            Pageable pageable
+    );
 
-    Page<Job> getAllIndiaJobs(Pageable pageable);
+    Page<Job> getAllIndiaJobs(
+            Pageable pageable
+    );
 }

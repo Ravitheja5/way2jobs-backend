@@ -27,82 +27,211 @@ public class JobController {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
 
+
+    // =========================================================
+    // CREATE JOB
+    // =========================================================
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Job createJob(@RequestBody Job job) {
         return jobService.saveJob(job);
     }
 
+
+    // =========================================================
+    // GET ALL JOBS
+    // =========================================================
+
     @GetMapping
     public ResponseEntity<Page<JobCardResponse>> getAllJobs(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
-            @RequestHeader(value = "Authorization", required = false) String authorization) {
-        Pageable pageable = PageRequest.of(Math.max(page, 0), Math.max(size, 1));
-        Page<JobCardResponse> response = jobService.getJobs(pageable)
-                .map(job -> JobMapper.toJobCard(job, isJobSaved(job.getId(), authorization)));
+            @RequestHeader(value = "Authorization", required = false)
+            String authorization) {
+
+        Pageable pageable = PageRequest.of(
+                Math.max(page, 0),
+                Math.max(size, 1)
+        );
+
+        Page<JobCardResponse> response =
+                jobService.getJobs(pageable)
+                        .map(job ->
+                                JobMapper.toJobCard(
+                                        job,
+                                        isJobSaved(
+                                                job.getId(),
+                                                authorization
+                                        )
+                                )
+                        );
+
         return ResponseEntity.ok(response);
     }
+
+
+    // =========================================================
+    // GET JOB BY ID
+    // =========================================================
 
     @GetMapping("/{id}")
     public ResponseEntity<JobDetailResponse> getJobById(
             @PathVariable Long id,
-            @RequestHeader(value = "Authorization", required = false) String authorization) {
+            @RequestHeader(value = "Authorization", required = false)
+            String authorization) {
+
         Job job = jobService.getJobById(id)
-                .orElseThrow(() -> new RuntimeException("Job not found with id: " + id));
-        return ResponseEntity.ok(JobMapper.toJobDetail(job, isJobSaved(job.getId(), authorization)));
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "Job not found with id: " + id
+                        )
+                );
+
+        return ResponseEntity.ok(
+                JobMapper.toJobDetail(
+                        job,
+                        isJobSaved(
+                                job.getId(),
+                                authorization
+                        )
+                )
+        );
     }
 
+
+    // =========================================================
+    // UPDATE JOB
+    // =========================================================
+
     @PutMapping("/{id}")
-    public Job updateJob(@PathVariable Long id,
-                         @RequestBody Job job) {
+    public Job updateJob(
+            @PathVariable Long id,
+            @RequestBody Job job) {
+
         return jobService.updateJob(id, job);
     }
+
+
+    // =========================================================
+    // DELETE JOB
+    // =========================================================
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteJob(@PathVariable Long id) {
+
         jobService.deleteJob(id);
     }
 
-    @GetMapping("/state/{stateId}")
+
+    // =========================================================
+    // GET JOBS BY STATE
+    // Example:
+    // /api/jobs/state/AP
+    // /api/jobs/state/Telangana
+    // =========================================================
+
+    @GetMapping("/state/{state}")
     public ResponseEntity<Page<JobCardResponse>> getJobsByState(
-            @PathVariable Long stateId,
+            @PathVariable String state,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
-            @RequestHeader(value = "Authorization", required = false) String authorization) {
-        Pageable pageable = PageRequest.of(Math.max(page, 0), Math.max(size, 1));
-        Page<JobCardResponse> response = jobService.getJobsByState(stateId, pageable)
-                .map(job -> JobMapper.toJobCard(job, isJobSaved(job.getId(), authorization)));
+            @RequestHeader(value = "Authorization", required = false)
+            String authorization) {
+
+        Pageable pageable = PageRequest.of(
+                Math.max(page, 0),
+                Math.max(size, 1)
+        );
+
+        Page<JobCardResponse> response =
+                jobService.getJobsByState(state, pageable)
+                        .map(job ->
+                                JobMapper.toJobCard(
+                                        job,
+                                        isJobSaved(
+                                                job.getId(),
+                                                authorization
+                                        )
+                                )
+                        );
+
         return ResponseEntity.ok(response);
     }
+
+
+    // =========================================================
+    // GET ALL INDIA JOBS
+    // =========================================================
 
     @GetMapping("/all-india")
     public ResponseEntity<Page<JobCardResponse>> getAllIndiaJobs(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
-            @RequestHeader(value = "Authorization", required = false) String authorization) {
-        Pageable pageable = PageRequest.of(Math.max(page, 0), Math.max(size, 1));
-        Page<JobCardResponse> response = jobService.getAllIndiaJobs(pageable)
-                .map(job -> JobMapper.toJobCard(job, isJobSaved(job.getId(), authorization)));
+            @RequestHeader(value = "Authorization", required = false)
+            String authorization) {
+
+        Pageable pageable = PageRequest.of(
+                Math.max(page, 0),
+                Math.max(size, 1)
+        );
+
+        Page<JobCardResponse> response =
+                jobService.getAllIndiaJobs(pageable)
+                        .map(job ->
+                                JobMapper.toJobCard(
+                                        job,
+                                        isJobSaved(
+                                                job.getId(),
+                                                authorization
+                                        )
+                                )
+                        );
+
         return ResponseEntity.ok(response);
     }
 
-    private boolean isJobSaved(Long jobId, String authorization) {
-        if (jobId == null || authorization == null || authorization.isBlank()) {
+
+    // =========================================================
+    // CHECK WHETHER JOB IS SAVED
+    // =========================================================
+
+    private boolean isJobSaved(
+            Long jobId,
+            String authorization) {
+
+        if (jobId == null ||
+                authorization == null ||
+                authorization.isBlank()) {
+
             return false;
         }
 
-        String token = authorization.startsWith("Bearer ") ? authorization.substring(7) : authorization;
+        String token = authorization.startsWith("Bearer ")
+                ? authorization.substring(7)
+                : authorization;
+
         try {
+
             String email = jwtUtil.extractEmail(token);
+
             if (email == null || email.isBlank()) {
                 return false;
             }
 
-            User user = userRepository.findByEmail(email).orElse(null);
-            return user != null && savedJobRepository.existsByUserAndJobId(user, jobId);
+            User user = userRepository
+                    .findByEmail(email)
+                    .orElse(null);
+
+            return user != null &&
+                    savedJobRepository.existsByUserAndJobId(
+                            user,
+                            jobId
+                    );
+
         } catch (RuntimeException ex) {
+
             return false;
         }
     }

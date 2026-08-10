@@ -20,4 +20,12 @@ public class ChangePasswordRequest {
             message = "Password must be 6-10 characters and contain at least 1 uppercase, 1 lowercase, 1 number and 1 special character"
     )
     private String newPassword;
+
+    public String getOldPassword() {
+        return oldPassword;
+    }
+
+    public String getNewPassword() {
+        return newPassword;
+    }
 }

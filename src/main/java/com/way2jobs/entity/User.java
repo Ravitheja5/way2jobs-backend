@@ -34,6 +34,10 @@ public class User {
     @Builder.Default
     private String role = "USER";
 
+    public String getRole() {
+    return role;
+}
+
     @Builder.Default
     private Boolean enabled = true;
 

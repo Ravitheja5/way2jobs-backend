@@ -4,6 +4,7 @@ import com.way2jobs.security.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
@@ -24,32 +25,102 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
         http
                 .cors(Customizer.withDefaults())
-                .csrf(csrf -> csrf.disable())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                .csrf(AbstractHttpConfigurer::disable)
+
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/api/auth/**", "/api/admin/login", "/api/states/**", "/api/categories/**", "/api/departments/**", "/api/jobs/**").permitAll()
+
+                        // OPTIONS requests
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                        // ================= PUBLIC APIs =================
+
+                        .requestMatchers(
+                                "/api/auth/**",
+                                "/api/admin/login",
+                                "/api/states/**",
+                                "/api/categories/**",
+                                "/api/departments/**",
+                                "/api/jobs/**"
+                        ).permitAll()
+
+                        // ================= TEMPORARY DB CHECK =================
+                        // MUST come BEFORE /api/admin/**
+
+                        .requestMatchers("/api/admin/db-check").permitAll()
+
+                        // ================= ADMIN APIs =================
+
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/users/**").hasAnyRole("USER", "ADMIN")
+
+                        // ================= USER APIs =================
+
+                        .requestMatchers("/api/users/**")
+                        .hasAnyRole("USER", "ADMIN")
+
+                        // ================= EVERYTHING ELSE =================
+
                         .anyRequest().authenticated()
                 )
+
                 .httpBasic(AbstractHttpConfigurer::disable)
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
+                .addFilterBefore(
+                        jwtFilter,
+                        UsernamePasswordAuthenticationFilter.class
+                );
 
         return http.build();
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
+
         CorsConfiguration configuration = new CorsConfiguration();
+
         configuration.setAllowedOrigins(Arrays.asList("*"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Auth-Token", "authorization", "content-type", "x-auth-token"));
-        configuration.setExposedHeaders(Arrays.asList("X-Auth-Token", "x-auth-token"));
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+
+        configuration.setAllowedMethods(
+                Arrays.asList(
+                        "GET",
+                        "POST",
+                        "PUT",
+                        "PATCH",
+                        "DELETE",
+                        "OPTIONS"
+                )
+        );
+
+        configuration.setAllowedHeaders(
+                Arrays.asList(
+                        "Authorization",
+                        "Content-Type",
+                        "X-Auth-Token",
+                        "authorization",
+                        "content-type",
+                        "x-auth-token"
+                )
+        );
+
+        configuration.setExposedHeaders(
+                Arrays.asList(
+                        "X-Auth-Token",
+                        "x-auth-token"
+                )
+        );
+
+        UrlBasedCorsConfigurationSource source =
+                new UrlBasedCorsConfigurationSource();
+
         source.registerCorsConfiguration("/**", configuration);
+
         return source;
     }
 }

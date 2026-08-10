@@ -84,4 +84,17 @@ public class AdminController {
         return ResponseEntity.ok(java.util.Map.of("message", result));
     }
 
+
+    // ================= DATABASE CHECK =================
+
+@GetMapping("/db-check")
+public ResponseEntity<String> dbCheck() {
+
+    int jobCount = adminService.getAllJobs().size();
+
+    return ResponseEntity.ok(
+            "Database connected successfully. Jobs in database: " + jobCount
+    );
+}
+
 }

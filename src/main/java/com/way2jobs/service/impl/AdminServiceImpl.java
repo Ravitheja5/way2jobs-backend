@@ -103,11 +103,10 @@ public class AdminServiceImpl implements AdminService {
             .salary(request.getSalary())
             .location(request.getLocation())
             .lastDate(request.getLastDate())
-            .notificationUrl(request.getNotificationUrl())
-            .applyUrl(request.getApplyUrl())
-            .department(department)
-            .category(category)
-            .state(state)
+            .pdfNotification(request.getNotificationUrl())
+            .applyLink(request.getApplyUrl())
+            .category(category.getName())
+            .state(state.getName())
             .build();
                 return jobService.saveJob(job);
 }
@@ -134,12 +133,10 @@ public class AdminServiceImpl implements AdminService {
     job.setSalary(request.getSalary());
     job.setLocation(request.getLocation());
     job.setLastDate(request.getLastDate());
-    job.setNotificationUrl(request.getNotificationUrl());
-    job.setApplyUrl(request.getApplyUrl());
-
-    job.setDepartment(department);
-    job.setCategory(category);
-    job.setState(state);
+    job.setPdfNotification(request.getNotificationUrl());
+job.setApplyLink(request.getApplyUrl());
+job.setCategory(category.getName());
+job.setState(state.getName());
 
                 return jobService.updateJob(id, job);
 }
@@ -184,11 +181,10 @@ public class AdminServiceImpl implements AdminService {
                 .salary(dto.getSalary())
                 .location(dto.getLocation())
                 .lastDate(dto.getLastDate())
-                .notificationUrl(dto.getNotificationUrl())
-                .applyUrl(dto.getApplyUrl())
-                .department(department)
-                .category(category)
-                .state(state)
+                .pdfNotification(dto.getNotificationUrl())
+.applyLink(dto.getApplyUrl())
+.category(category.getName())
+.state(state.getName())
                 .build();
 
         jobs.add(job);
