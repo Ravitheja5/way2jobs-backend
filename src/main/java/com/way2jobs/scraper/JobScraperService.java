@@ -1,17 +1,14 @@
 package com.way2jobs.scraper;
 
 import com.way2jobs.entity.Category;
-import com.way2jobs.entity.Department;
 import com.way2jobs.entity.State;
 import com.way2jobs.scraper.config.ScraperProperties;
 import com.way2jobs.scraper.dto.ScraperRunResult;
 import com.way2jobs.scraper.model.ScrapedJob;
 import com.way2jobs.scraper.source.JobSource;
 import com.way2jobs.service.FirebaseMessagingService;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Service;
 
@@ -29,17 +26,15 @@ public class JobScraperService {
     private final ScraperLookupService lookups;
     private final ScraperValidationService validation;
     private final ScraperPersistenceService persistence;
+
     private final List<JobSource> sources;
+
     private final ObjectProvider<FirebaseMessagingService> fcm;
 
-    private final AtomicBoolean running = new AtomicBoolean(false);
+    private final AtomicBoolean running =
+            new AtomicBoolean(false);
 
     private volatile ScraperRunResult lastResult;
-
-
-    // =========================================================
-    // STATUS
-    // =========================================================
 
     public boolean isRunning() {
         return running.get();
@@ -49,377 +44,268 @@ public class JobScraperService {
         return lastResult;
     }
 
-
-    // =========================================================
-    // RUN SCRAPER
-    // =========================================================
-
     public ScraperRunResult run() {
 
-        ScraperRunResult r = start();
-
-        // -----------------------------------------------------
-        // CHECK ENABLED
-        // -----------------------------------------------------
+        ScraperRunResult result = start();
 
         if (!props.isEnabled()) {
 
-            r.addMessage("scraper disabled");
+            result.addMessage("scraper disabled");
 
-            return finish(r);
+            return finish(result);
         }
-
-
-        // -----------------------------------------------------
-        // PREVENT TWO SCRAPER RUNS AT SAME TIME
-        // -----------------------------------------------------
 
         if (!running.compareAndSet(false, true)) {
 
-            r.addMessage("scraper already running");
+            result.addMessage("scraper already running");
 
-            return finish(r);
+            return finish(result);
         }
-
 
         try {
 
-            // -------------------------------------------------
-            // REFRESH DATABASE CACHES
-            // -------------------------------------------------
-
+            /*
+             * Refresh database lookup caches.
+             */
             lookups.refreshCaches();
 
-
-            // -------------------------------------------------
-            // RESOLVE DEFAULT CATEGORY
-            // -------------------------------------------------
-
-            Category cat =
+            /*
+             * Resolve default category.
+             */
+            Category category =
                     lookups
                             .resolveCategory(
                                     props.getDefaultCategoryName()
                             )
                             .orElse(null);
 
+            if (category == null) {
 
-            if (cat == null) {
-
-                r.addMessage(
+                result.addMessage(
                         "Category '"
                                 + props.getDefaultCategoryName()
-                                + "' does not exist. "
-                                + "Create it first via POST /api/categories."
+                                + "' does not exist."
                 );
 
-                return finish(r);
+                return finish(result);
             }
 
-
-            // =================================================
-            // PROCESS ALL CONFIGURED SOURCES
-            // =================================================
-
+            /*
+             * Process configured sources.
+             */
             for (var entry : props.getSources().entrySet()) {
 
+                String stateName =
+                        entry.getKey();
 
-                // -------------------------------------------------
-                // CONVERT CONFIG KEY TO DATABASE STATE NAME
-                // -------------------------------------------------
+                String sourceUrl =
+                        entry.getValue();
 
-                String sourceStateName =
-                        switch (entry.getKey()) {
-
-                            case "AllIndia" ->
-                                    "All India";
-
-                            case "AndhraPradesh" ->
-                                    "Andhra Pradesh";
-
-                            case "Telangana" ->
-                                    "Telangana";
-
-                            default ->
-                                    entry.getKey();
-                        };
-
-
-                log.info(
-                        "Processing scraper source: {} -> {}",
-                        entry.getKey(),
-                        sourceStateName
-                );
-
-
-                // -------------------------------------------------
-                // FIND STATE IN DATABASE
-                // -------------------------------------------------
-
+                /*
+                 * Resolve state.
+                 */
                 State state =
                         lookups
-                                .resolveState(sourceStateName)
+                                .resolveState(stateName)
                                 .orElse(null);
-
 
                 if (state == null) {
 
-                    r.addMessage(
+                    result.addMessage(
                             "state not found: "
-                                    + sourceStateName
+                                    + stateName
                     );
 
                     continue;
                 }
 
-
-                // -------------------------------------------------
-                // FIND JOB SOURCE
-                // -------------------------------------------------
-
+                /*
+                 * Get FreeJobAlert source.
+                 */
                 JobSource source =
                         sources.stream()
+                                .filter(s ->
+                                        "FreeJobAlert"
+                                                .equalsIgnoreCase(
+                                                        s.name()
+                                                )
+                                )
                                 .findFirst()
                                 .orElse(null);
 
-
                 if (source == null) {
 
-                    r.addMessage(
-                            "no job source configured"
+                    result.addMessage(
+                            "FreeJobAlert source not configured"
                     );
 
                     break;
                 }
 
-
                 try {
 
-                    // -------------------------------------------------
-                    // PAGE VISITED
-                    // -------------------------------------------------
-
-                    r.setPagesVisited(
-                            r.getPagesVisited() + 1
+                    result.setPagesVisited(
+                            result.getPagesVisited() + 1
                     );
 
-
-                    // -------------------------------------------------
-                    // FETCH JOBS
-                    // -------------------------------------------------
-
+                    /*
+                     * Scrape jobs.
+                     */
                     List<ScrapedJob> rows =
                             source.fetch(
-                                    sourceStateName,
-                                    entry.getValue(),
+                                    stateName,
+                                    sourceUrl,
                                     props
                             );
 
-
-                    r.setRowsFound(
-                            r.getRowsFound()
+                    result.setRowsFound(
+                            result.getRowsFound()
                                     + rows.size()
                     );
-
 
                     if (rows.isEmpty()) {
 
                         log.warn(
-                                "No rows found for source {}",
-                                entry.getValue()
+                                "No rows found from {}",
+                                sourceUrl
                         );
                     }
 
-
-                    // =================================================
-                    // PROCESS EACH SCRAPED JOB
-                    // =================================================
-
+                    /*
+                     * Process every scraped job.
+                     */
                     for (ScrapedJob row : rows) {
 
-
-                        // -------------------------------------------------
-                        // MAX JOB LIMIT
-                        // -------------------------------------------------
-
-                        if (
-                                r.getImported()
-                                        >= props.getMaxJobsPerRun()
-                        ) {
+                        if (result.getImported()
+                                >= props.getMaxJobsPerRun()) {
 
                             break;
                         }
 
-
-                        // -------------------------------------------------
-                        // VALIDATE SCRAPED JOB
-                        // -------------------------------------------------
-
-                        ScraperValidationService.ValidationResult v =
+                        /*
+                         * Validate scraped job.
+                         */
+                        ScraperValidationService.ValidationResult validationResult =
                                 validation.validate(row);
 
+                        if (validationResult.reason() != null) {
 
-                        if (v.reason() != null) {
-
-                            r.setSkipped(
-                                    r.getSkipped() + 1
+                            result.setSkipped(
+                                    result.getSkipped() + 1
                             );
 
-                            r.addMessage(
-                                    v.reason()
+                            result.addMessage(
+                                    validationResult.reason()
                             );
 
                             continue;
                         }
 
+                        ScrapedJob validJob =
+                                validationResult.job();
 
-                        // -------------------------------------------------
-                        // RESOLVE DEPARTMENT
-                        // -------------------------------------------------
-
-                        String organization =
-                                v.job()
-                                        .getOrganizationName();
-
-
-                        Department d =
+                        /*
+                         * IMPORTANT:
+                         *
+                         * Department is OPTIONAL.
+                         *
+                         * We do NOT skip a job when the
+                         * department is missing.
+                         *
+                         * Organization is still saved
+                         * directly into the Job entity.
+                         */
+                        var department =
                                 lookups
                                         .resolveDepartment(
-                                                organization
+                                                validJob
+                                                        .getOrganizationName()
                                         )
                                         .orElse(null);
 
-
-                        if (d == null) {
-
-                            r.setSkipped(
-                                    r.getSkipped() + 1
-                            );
-
-                            r.addMessage(
-                                    "department not found: "
-                                            + organization
-                            );
-
-                            continue;
-                        }
-
-
-                        // -------------------------------------------------
-                        // SAVE JOB
-                        // -------------------------------------------------
-
+                        /*
+                         * Persist job.
+                         *
+                         * department can be null.
+                         */
                         ScraperPersistenceService.PersistOutcome outcome =
                                 persistence.persistOne(
-                                        v.job(),
-                                        d,
-                                        cat,
+                                        validJob,
+                                        department,
+                                        category,
                                         state
                                 );
 
+                        if (outcome
+                                instanceof ScraperPersistenceService.Imported) {
 
-                        // -------------------------------------------------
-                        // IMPORTED
-                        // -------------------------------------------------
-
-                        if (
-                                outcome
-                                        instanceof ScraperPersistenceService.Imported
-                        ) {
-
-                            r.setImported(
-                                    r.getImported() + 1
+                            result.setImported(
+                                    result.getImported() + 1
                             );
 
-                        }
+                        } else if (outcome
+                                instanceof ScraperPersistenceService.Duplicate) {
 
-
-                        // -------------------------------------------------
-                        // DUPLICATE
-                        // -------------------------------------------------
-
-                        else if (
-                                outcome
-                                        instanceof ScraperPersistenceService.Duplicate
-                        ) {
-
-                            r.setDuplicates(
-                                    r.getDuplicates() + 1
+                            result.setDuplicates(
+                                    result.getDuplicates() + 1
                             );
 
-                        }
+                        } else if (outcome
+                                instanceof ScraperPersistenceService.Failed failed) {
 
-
-                        // -------------------------------------------------
-                        // FAILED
-                        // -------------------------------------------------
-
-                        else {
-
-                            r.setFailed(
-                                    r.getFailed() + 1
+                            result.setFailed(
+                                    result.getFailed() + 1
                             );
 
-                            r.addMessage(
-                                    (
-                                            (ScraperPersistenceService.Failed)
-                                                    outcome
-                                    ).reason()
+                            result.addMessage(
+                                    failed.reason()
                             );
                         }
                     }
 
-
-                    // -------------------------------------------------
-                    // POLITE DELAY
-                    // -------------------------------------------------
-
-                    if (
-                            props.getPoliteDelayMs() > 0
-                    ) {
+                    /*
+                     * Polite delay between sources.
+                     */
+                    if (props.getPoliteDelayMs() > 0) {
 
                         Thread.sleep(
                                 props.getPoliteDelayMs()
                         );
                     }
 
-
                 } catch (Exception e) {
 
-                    r.setFailed(
-                            r.getFailed() + 1
+                    log.error(
+                            "Source failed: {}",
+                            sourceUrl,
+                            e
                     );
 
-                    r.addMessage(
+                    result.setFailed(
+                            result.getFailed() + 1
+                    );
+
+                    result.addMessage(
                             "source failed: "
                                     + e.getMessage()
-                    );
-
-                    log.error(
-                            "Scraper source failed: {}",
-                            entry.getValue(),
-                            e
                     );
                 }
             }
 
-
-            // =================================================
-            // SEND SUMMARY NOTIFICATION
-            // =================================================
-
-            if (
-                    props.isNotifyOnNewJobs()
-                            && r.getImported() > 0
-            ) {
+            /*
+             * Send summary notification.
+             */
+            if (props.isNotifyOnNewJobs()
+                    && result.getImported() > 0) {
 
                 try {
 
                     int count =
-                            r.getImported();
+                            result.getImported();
 
                     fcm.ifAvailable(
-                            f ->
-                                    f.sendNotification(
+                            firebase ->
+                                    firebase.sendNotification(
                                             "New Government Jobs",
                                             count
                                                     + " new jobs added. Tap to view.",
@@ -429,7 +315,9 @@ public class JobScraperService {
                                                     "SCRAPER_SUMMARY",
 
                                                     "count",
-                                                    String.valueOf(count)
+                                                    String.valueOf(
+                                                            count
+                                                    )
                                             )
                                     )
                     );
@@ -437,15 +325,13 @@ public class JobScraperService {
                 } catch (Exception e) {
 
                     log.warn(
-                            "summary push failed",
+                            "Summary push failed",
                             e
                     );
                 }
             }
 
-
-            return finish(r);
-
+            return finish(result);
 
         } finally {
 
@@ -453,46 +339,36 @@ public class JobScraperService {
         }
     }
 
-
-    // =========================================================
-    // START
-    // =========================================================
-
     private ScraperRunResult start() {
 
-        ScraperRunResult r =
+        ScraperRunResult result =
                 new ScraperRunResult();
 
-        r.setStartedAt(
+        result.setStartedAt(
                 Instant.now()
         );
 
-        return r;
+        return result;
     }
 
-
-    // =========================================================
-    // FINISH
-    // =========================================================
-
     private ScraperRunResult finish(
-            ScraperRunResult r
+            ScraperRunResult result
     ) {
 
-        r.setFinishedAt(
+        result.setFinishedAt(
                 Instant.now()
         );
 
-        r.setDurationMs(
-                r.getFinishedAt()
+        result.setDurationMs(
+                result.getFinishedAt()
                         .toEpochMilli()
                         -
-                        r.getStartedAt()
+                        result.getStartedAt()
                                 .toEpochMilli()
         );
 
-        lastResult = r;
+        lastResult = result;
 
-        return r;
+        return result;
     }
 }
