@@ -7,9 +7,9 @@ public class ScrapedJob {
 
     private String title;
 
-    private String organizationName;
-
     private String postName;
+
+    private String organizationName;
 
     private String qualification;
 
@@ -18,6 +18,10 @@ public class ScrapedJob {
     private String salary;
 
     private String location;
+
+    private String ageLimit;
+
+    private String experience;
 
     private String lastDateRaw;
 
