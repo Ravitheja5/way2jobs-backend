@@ -11,6 +11,16 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class BulkJobItem {
 
+    /*
+     * SOURCE IDENTITY
+     *
+     * These values come directly from the scraper.
+     * They are NOT database IDs.
+     */
+    private String jobId;
+
+    private String source;
+
     private String title;
 
     private String organization;
@@ -44,9 +54,9 @@ public class BulkJobItem {
     private String officialWebsite;
 
     /*
-     * These are SOURCE VALUES.
+     * SOURCE VALUES.
      *
-     * They are NOT database IDs.
+     * Never convert these to database IDs in Python.
      */
     private String category;
 

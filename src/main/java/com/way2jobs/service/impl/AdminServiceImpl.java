@@ -899,75 +899,95 @@ public class AdminServiceImpl implements AdminService {
     // ============================================================
 
     private Job buildJobFromBulkItem(
-            BulkJobItem dto,
-            Category category,
-            State state
-    ) {
+        BulkJobItem dto,
+        Category category,
+        State state
+) {
 
-        Job.JobBuilder builder =
-                Job.builder()
-                        .title(
-                                dto.getTitle()
-                        )
-                        .organization(
-                                dto.getOrganization()
-                        )
-                        .postName(
-                                dto.getPostName()
-                        )
-                        .qualification(
-                                dto.getQualification()
-                        )
-                        .vacancies(
-                                dto.getVacancies()
-                        )
-                        .salary(
-                                dto.getSalary()
-                        )
-                        .location(
-                                dto.getLocation()
-                        )
-                        .lastDate(
-                                dto.getLastDate()
-                        )
-                        .pdfNotification(
-                                dto.getNotificationUrl()
-                        )
-                        .applyLink(
-                                dto.getApplyUrl()
-                        )
-                        .officialWebsite(
-                                dto.getOfficialWebsite()
-                        )
-                        .ageLimit(
-                                dto.getAgeLimit()
-                        )
-                        .experience(
-                                dto.getExperience()
-                        )
-                        .applicationFee(
-                                dto.getApplicationFee()
-                        )
-                        .selectionProcess(
-                                dto.getSelectionProcess()
-                        )
-                        .category(
-                                category.getName()
-                        )
-                        .state(
-                                state.getName()
-                        );
+    Job.JobBuilder builder =
+            Job.builder()
 
-        if (dto.getPostDate() != null) {
+                    // ==========================================
+                    // SOURCE IDENTITY
+                    // ==========================================
 
-            builder.postDate(
-                    dto.getPostDate()
-                            .atStartOfDay()
-            );
-        }
+                    .jobId(dto.getJobId())
+                    .source(dto.getSource())
 
-        return builder.build();
+                    // ==========================================
+                    // JOB DATA
+                    // ==========================================
+
+                    .title(dto.getTitle())
+
+                    .organization(dto.getOrganization())
+
+                    .postName(dto.getPostName())
+
+                    .qualification(dto.getQualification())
+
+                    .vacancies(dto.getVacancies())
+
+                    .salary(dto.getSalary())
+
+                    .location(dto.getLocation())
+
+                    .lastDate(dto.getLastDate())
+
+                    // ==========================================
+                    // IMPORTANT LINKS
+                    // ==========================================
+
+                    .pdfNotification(
+                            dto.getNotificationUrl()
+                    )
+
+                    .applyLink(
+                            dto.getApplyUrl()
+                    )
+
+                    .officialWebsite(
+                            dto.getOfficialWebsite()
+                    )
+
+                    // ==========================================
+                    // ELIGIBILITY
+                    // ==========================================
+
+                    .ageLimit(dto.getAgeLimit())
+
+                    .experience(dto.getExperience())
+
+                    .applicationFee(
+                            dto.getApplicationFee()
+                    )
+
+                    .selectionProcess(
+                            dto.getSelectionProcess()
+                    )
+
+                    // ==========================================
+                    // SOURCE RESOLVED MASTER VALUES
+                    // ==========================================
+
+                    .category(category.getName())
+
+                    .state(state.getName());
+
+    // ==========================================
+    // POST DATE
+    // ==========================================
+
+    if (dto.getPostDate() != null) {
+
+        builder.postDate(
+                dto.getPostDate()
+                        .atStartOfDay()
+        );
     }
+
+    return builder.build();
+}
 
 
     // ============================================================
