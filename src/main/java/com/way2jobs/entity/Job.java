@@ -19,36 +19,66 @@ public class Job {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    public Long getId() {
-    return id;
-}
+    // ============================================================
+    // BASIC JOB IDENTIFICATION
+    // ============================================================
 
-    @Column(name = "job_id")
+    @Column(name = "job_id", length = 255)
     private String jobId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String title;
 
-    @Column(name = "organization")
+    @Column(name = "organization", columnDefinition = "TEXT")
     private String organization;
 
-    @Column(name = "post_name")
+    @Column(name = "post_name", columnDefinition = "TEXT")
     private String postName;
 
     @Column(name = "vacancies")
     private Integer vacancies;
 
-    @Column(name = "qualification", length = 500)
+
+    // ============================================================
+    // JOB DETAILS
+    // ============================================================
+
+    @Column(name = "qualification", columnDefinition = "TEXT")
     private String qualification;
 
-    @Column(name = "salary", length = 500)
+    @Column(name = "salary", columnDefinition = "TEXT")
     private String salary;
 
-    @Column(name = "location", length = 255)
+    @Column(name = "location", columnDefinition = "TEXT")
     private String location;
+
+    @Column(name = "experience", columnDefinition = "TEXT")
+    private String experience;
+
+    @Column(name = "age_limit", columnDefinition = "TEXT")
+    private String ageLimit;
+
+    @Column(name = "application_fee", columnDefinition = "TEXT")
+    private String applicationFee;
+
+    @Column(name = "selection_process", columnDefinition = "TEXT")
+    private String selectionProcess;
+
+
+    // ============================================================
+    // DATES
+    // ============================================================
 
     @Column(name = "last_date")
     private LocalDate lastDate;
+
+    @Column(name = "post_date")
+    private LocalDateTime postDate;
+
+
+    // ============================================================
+    // LINKS
+    // ============================================================
 
     @Column(name = "apply_link", columnDefinition = "TEXT")
     private String applyLink;
@@ -59,35 +89,35 @@ public class Job {
     @Column(name = "official_website", columnDefinition = "TEXT")
     private String officialWebsite;
 
-    @Column(name = "post_date")
-    private LocalDateTime postDate;
+
+    // ============================================================
+    // CLASSIFICATION
+    // ============================================================
 
     @Column(name = "category", length = 100)
     private String category;
 
-    @Column(name = "state", length = 50)
+    @Column(name = "state", length = 100)
     private String state;
-
-    @Column(name = "selection_process", columnDefinition = "TEXT")
-    private String selectionProcess;
-
-    @Column(name = "age_limit", length = 100)
-    private String ageLimit;
-
-    @Column(name = "application_fee", length = 100)
-    private String applicationFee;
-
-    @Column(name = "experience", length = 255)
-    private String experience;
-
-    @Column(name = "is_active")
-    private Boolean isActive;
 
     @Column(name = "source", length = 100)
     private String source;
 
+
+    // ============================================================
+    // STATUS / AUDIT
+    // ============================================================
+
+    @Column(name = "is_active")
+    private Boolean isActive;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+
+    // ============================================================
+    // DEFAULT VALUES
+    // ============================================================
 
     @PrePersist
     public void prePersist() {
