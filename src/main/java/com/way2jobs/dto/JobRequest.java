@@ -9,6 +9,10 @@ public class JobRequest {
 
     private String title;
 
+    private String organization;
+
+    private String postName;
+
     private String qualification;
 
     private Integer vacancies;

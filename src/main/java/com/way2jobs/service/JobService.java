@@ -4,6 +4,7 @@ import com.way2jobs.entity.Job;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,5 +33,21 @@ public interface JobService {
 
     Page<Job> getAllIndiaJobs(
             Pageable pageable
+    );
+
+    // Bulk import duplicate detection
+
+    Optional<Job> findByApplyLink(
+            String applyLink
+    );
+
+    Optional<Job> findByPdfNotification(
+            String pdfNotification
+    );
+
+    Optional<Job> findByNaturalKey(
+            String organization,
+            String postName,
+            LocalDate lastDate
     );
 }
