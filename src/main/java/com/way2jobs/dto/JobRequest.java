@@ -23,9 +23,21 @@ public class JobRequest {
 
     private LocalDate lastDate;
 
+    private LocalDate postDate;
+
+    private String ageLimit;
+
+    private String experience;
+
+    private String applicationFee;
+
+    private String selectionProcess;
+
     private String notificationUrl;
 
     private String applyUrl;
+
+    private String officialWebsite;
 
     private Long departmentId;
 

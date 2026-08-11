@@ -99,6 +99,10 @@ public class JobServiceImpl implements JobService {
             existingJob.setOfficialWebsite(job.getOfficialWebsite());
         }
 
+        if (job.getPostDate() != null) {
+    existingJob.setPostDate(job.getPostDate());
+}
+
         if (job.getCategory() != null &&
                 !job.getCategory().isBlank()) {
             existingJob.setCategory(job.getCategory());
