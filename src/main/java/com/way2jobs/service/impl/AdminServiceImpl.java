@@ -3,6 +3,7 @@ package com.way2jobs.service.impl;
 import com.way2jobs.dto.AdminDashboardResponse;
 import com.way2jobs.dto.AdminLoginRequest;
 import com.way2jobs.dto.AdminLoginResponse;
+import com.way2jobs.dto.BulkJobItem;
 import com.way2jobs.dto.BulkJobRequest;
 import com.way2jobs.dto.JobRequest;
 import com.way2jobs.entity.Category;
@@ -22,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -33,20 +33,29 @@ import java.util.Optional;
 public class AdminServiceImpl implements AdminService {
 
     private final JobService jobService;
+
     private final DepartmentService departmentService;
+
     private final CategoryService categoryService;
+
     private final StateService stateService;
+
     private final FirebaseMessagingService firebaseMessagingService;
+
     private final JwtUtil jwtUtil;
+
 
     // ============================================================
     // ADMIN LOGIN
     // ============================================================
 
     @Override
-    public AdminLoginResponse login(AdminLoginRequest request) {
+    public AdminLoginResponse login(
+            AdminLoginRequest request
+    ) {
 
         if (request == null) {
+
             return new AdminLoginResponse(
                     false,
                     "Invalid request",
@@ -77,6 +86,7 @@ public class AdminServiceImpl implements AdminService {
         );
     }
 
+
     // ============================================================
     // ADMIN DASHBOARD
     // ============================================================
@@ -84,27 +94,37 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public AdminDashboardResponse getDashboard() {
 
-        List<Job> allJobs = jobService.getAllJobs();
+        List<Job> allJobs =
+                jobService.getAllJobs();
 
-        long totalJobs = allJobs.size();
+        long totalJobs =
+                allJobs.size();
 
         long totalDepartments =
-                departmentService.getAllDepartments().size();
+                departmentService
+                        .getAllDepartments()
+                        .size();
 
         long totalCategories =
-                categoryService.getAllCategories().size();
+                categoryService
+                        .getAllCategories()
+                        .size();
 
         long totalStates =
-                stateService.getAllStates().size();
+                stateService
+                        .getAllStates()
+                        .size();
 
-        long todayJobs = allJobs
-                .stream()
-                .filter(job ->
-                        job.getCreatedAt() != null
-                                && job.getCreatedAt()
-                                .toLocalDate()
-                                .equals(LocalDate.now()))
-                .count();
+        long todayJobs =
+                allJobs
+                        .stream()
+                        .filter(job ->
+                                job.getCreatedAt() != null
+                                        && job.getCreatedAt()
+                                        .toLocalDate()
+                                        .equals(LocalDate.now())
+                        )
+                        .count();
 
         return new AdminDashboardResponse(
                 totalJobs,
@@ -115,6 +135,7 @@ public class AdminServiceImpl implements AdminService {
         );
     }
 
+
     // ============================================================
     // GET ALL JOBS
     // ============================================================
@@ -124,19 +145,26 @@ public class AdminServiceImpl implements AdminService {
         return jobService.getAllJobs();
     }
 
+
     // ============================================================
     // CREATE SINGLE JOB
+    //
+    // Existing Admin CRUD continues to use database IDs.
     // ============================================================
 
     @Transactional
     @Override
-    public Job createJob(JobRequest request) {
+    public Job createJob(
+            JobRequest request
+    ) {
 
         validateJobRequest(request);
 
         Category category =
                 categoryService
-                        .getCategoryById(request.getCategoryId())
+                        .getCategoryById(
+                                request.getCategoryId()
+                        )
                         .orElseThrow(() ->
                                 new EntityNotFoundException(
                                         "Category not found: "
@@ -146,7 +174,9 @@ public class AdminServiceImpl implements AdminService {
 
         State state =
                 stateService
-                        .getStateById(request.getStateId())
+                        .getStateById(
+                                request.getStateId()
+                        )
                         .orElseThrow(() ->
                                 new EntityNotFoundException(
                                         "State not found: "
@@ -154,9 +184,10 @@ public class AdminServiceImpl implements AdminService {
                                 )
                         );
 
-        // Department is required by the request contract.
         departmentService
-                .getDepartmentById(request.getDepartmentId())
+                .getDepartmentById(
+                        request.getDepartmentId()
+                )
                 .orElseThrow(() ->
                         new EntityNotFoundException(
                                 "Department not found: "
@@ -164,17 +195,21 @@ public class AdminServiceImpl implements AdminService {
                         )
                 );
 
-        Job job = buildJobFromRequest(
-                request,
-                category,
-                state
-        );
+        Job job =
+                buildJobFromRequest(
+                        request,
+                        category,
+                        state
+                );
 
         return jobService.saveJob(job);
     }
 
+
     // ============================================================
     // UPDATE SINGLE JOB
+    //
+    // Existing Admin CRUD remains ID based.
     // ============================================================
 
     @Transactional
@@ -185,6 +220,7 @@ public class AdminServiceImpl implements AdminService {
     ) {
 
         if (id == null) {
+
             throw new IllegalArgumentException(
                     "Job ID cannot be null"
             );
@@ -193,7 +229,8 @@ public class AdminServiceImpl implements AdminService {
         validateJobRequest(request);
 
         Job existingJob =
-                jobService.getJobById(id)
+                jobService
+                        .getJobById(id)
                         .orElseThrow(() ->
                                 new EntityNotFoundException(
                                         "Job not found: " + id
@@ -202,7 +239,9 @@ public class AdminServiceImpl implements AdminService {
 
         Category category =
                 categoryService
-                        .getCategoryById(request.getCategoryId())
+                        .getCategoryById(
+                                request.getCategoryId()
+                        )
                         .orElseThrow(() ->
                                 new EntityNotFoundException(
                                         "Category not found: "
@@ -212,7 +251,9 @@ public class AdminServiceImpl implements AdminService {
 
         State state =
                 stateService
-                        .getStateById(request.getStateId())
+                        .getStateById(
+                                request.getStateId()
+                        )
                         .orElseThrow(() ->
                                 new EntityNotFoundException(
                                         "State not found: "
@@ -221,17 +262,15 @@ public class AdminServiceImpl implements AdminService {
                         );
 
         departmentService
-                .getDepartmentById(request.getDepartmentId())
+                .getDepartmentById(
+                        request.getDepartmentId()
+                )
                 .orElseThrow(() ->
                         new EntityNotFoundException(
                                 "Department not found: "
                                         + request.getDepartmentId()
                         )
                 );
-
-        // --------------------------------------------------------
-        // BASIC FIELDS
-        // --------------------------------------------------------
 
         existingJob.setTitle(
                 request.getTitle()
@@ -265,10 +304,6 @@ public class AdminServiceImpl implements AdminService {
                 request.getLastDate()
         );
 
-        // --------------------------------------------------------
-        // APPLICATION / NOTIFICATION
-        // --------------------------------------------------------
-
         existingJob.setPdfNotification(
                 request.getNotificationUrl()
         );
@@ -280,10 +315,6 @@ public class AdminServiceImpl implements AdminService {
         existingJob.setOfficialWebsite(
                 request.getOfficialWebsite()
         );
-
-        // --------------------------------------------------------
-        // ADDITIONAL JOB DETAILS
-        // --------------------------------------------------------
 
         existingJob.setAgeLimit(
                 request.getAgeLimit()
@@ -301,19 +332,13 @@ public class AdminServiceImpl implements AdminService {
                 request.getSelectionProcess()
         );
 
-        // --------------------------------------------------------
-        // POST DATE
-        // --------------------------------------------------------
-
         if (request.getPostDate() != null) {
+
             existingJob.setPostDate(
-                    request.getPostDate().atStartOfDay()
+                    request.getPostDate()
+                            .atStartOfDay()
             );
         }
-
-        // --------------------------------------------------------
-        // CATEGORY / STATE
-        // --------------------------------------------------------
 
         existingJob.setCategory(
                 category.getName()
@@ -329,6 +354,7 @@ public class AdminServiceImpl implements AdminService {
         );
     }
 
+
     // ============================================================
     // DELETE JOB
     // ============================================================
@@ -338,12 +364,14 @@ public class AdminServiceImpl implements AdminService {
     public void deleteJob(Long id) {
 
         if (id == null) {
+
             throw new IllegalArgumentException(
                     "Job ID cannot be null"
             );
         }
 
-        if (!jobService.getJobById(id).isPresent()) {
+        if (jobService.getJobById(id).isEmpty()) {
+
             throw new EntityNotFoundException(
                     "Job not found: " + id
             );
@@ -352,8 +380,25 @@ public class AdminServiceImpl implements AdminService {
         jobService.deleteJob(id);
     }
 
+
     // ============================================================
-    // BULK IMPORT
+    // 🔥 SOURCE-DRIVEN BULK IMPORT
+    //
+    // IMPORTANT:
+    //
+    // Python DOES NOT send:
+    //
+    // departmentId
+    // categoryId
+    // stateId
+    //
+    // Python sends the actual source values:
+    //
+    // organization
+    // category
+    // state
+    //
+    // Backend resolves those values.
     // ============================================================
 
     @Transactional
@@ -372,141 +417,159 @@ public class AdminServiceImpl implements AdminService {
         }
 
         int insertedCount = 0;
+
         int updatedCount = 0;
+
         int skippedCount = 0;
 
         List<Job> newJobsForNotification =
                 new ArrayList<>();
 
-        // ========================================================
-        // PROCESS EACH SCRAPER JOB
-        // ========================================================
 
-        for (JobRequest dto : request.getJobs()) {
+        for (BulkJobItem dto :
+                request.getJobs()) {
 
             if (dto == null) {
+
                 skippedCount++;
+
                 continue;
             }
 
-            validateJobRequest(dto);
+            try {
 
-            // ====================================================
-            // VALIDATE DEPARTMENT
-            // ====================================================
+                validateBulkJobItem(dto);
 
-            Department department =
-                    departmentService
-                            .getDepartmentById(
-                                    dto.getDepartmentId()
-                            )
-                            .orElseThrow(() ->
-                                    new EntityNotFoundException(
-                                            "Department not found: "
-                                                    + dto.getDepartmentId()
-                                    )
+
+                // =================================================
+                // ORGANIZATION
+                //
+                // Source → organization name
+                //
+                // Existing department:
+                // use it.
+                //
+                // New organization:
+                // automatically create department.
+                // =================================================
+
+                Department department =
+                        resolveOrCreateDepartment(
+                                dto.getOrganization(),
+                                dto.getOfficialWebsite()
+                        );
+
+
+                // =================================================
+                // CATEGORY
+                //
+                // Source → category name
+                //
+                // No database ID from scraper.
+                // =================================================
+
+                Category category =
+                        resolveOrCreateCategory(
+                                dto.getCategory()
+                        );
+
+
+                // =================================================
+                // STATE
+                //
+                // Source → state name
+                //
+                // State master must already contain it.
+                // =================================================
+
+                State state =
+                        resolveState(
+                                dto.getState()
+                        );
+
+
+                // =================================================
+                // DUPLICATE DETECTION
+                // =================================================
+
+                Optional<Job> existingJob =
+                        findExistingBulkJob(dto);
+
+
+                // =================================================
+                // UPDATE
+                // =================================================
+
+                if (existingJob.isPresent()) {
+
+                    Job oldJob =
+                            existingJob.get();
+
+                    Job incomingJob =
+                            buildJobFromBulkItem(
+                                    dto,
+                                    category,
+                                    state
                             );
 
-            // ====================================================
-            // VALIDATE CATEGORY
-            // ====================================================
+                    jobService.updateJob(
+                            oldJob.getId(),
+                            incomingJob
+                    );
 
-            Category category =
-                    categoryService
-                            .getCategoryById(
-                                    dto.getCategoryId()
-                            )
-                            .orElseThrow(() ->
-                                    new EntityNotFoundException(
-                                            "Category not found: "
-                                                    + dto.getCategoryId()
-                                    )
-                            );
+                    updatedCount++;
 
-            // ====================================================
-            // VALIDATE STATE
-            // ====================================================
+                    continue;
+                }
 
-            State state =
-                    stateService
-                            .getStateById(
-                                    dto.getStateId()
-                            )
-                            .orElseThrow(() ->
-                                    new EntityNotFoundException(
-                                            "State not found: "
-                                                    + dto.getStateId()
-                                    )
-                            );
 
-            // ====================================================
-            // FIND EXISTING JOB
-            //
-            // Priority:
-            //
-            // 1. Apply URL
-            // 2. PDF notification
-            // 3. Organization + Post Name + Last Date
-            // ====================================================
+                // =================================================
+                // INSERT
+                // =================================================
 
-            Optional<Job> existingJob =
-                    findExistingJob(dto);
-
-            // ====================================================
-            // EXISTING JOB -> UPDATE
-            // ====================================================
-
-            if (existingJob.isPresent()) {
-
-                Job oldJob =
-                        existingJob.get();
-
-                Job incomingJob =
-                        buildJobFromRequest(
+                Job newJob =
+                        buildJobFromBulkItem(
                                 dto,
                                 category,
                                 state
                         );
 
-                jobService.updateJob(
-                        oldJob.getId(),
-                        incomingJob
-                );
+                Job savedJob =
+                        jobService.saveJob(
+                                newJob
+                        );
 
-                updatedCount++;
+                if (savedJob != null
+                        && savedJob.getId() != null) {
 
-                continue;
-            }
+                    insertedCount++;
 
-            // ====================================================
-            // NEW JOB -> INSERT
-            // ====================================================
-
-            Job newJob =
-                    buildJobFromRequest(
-                            dto,
-                            category,
-                            state
+                    newJobsForNotification.add(
+                            savedJob
                     );
+                }
 
-            Job savedJob =
-                    jobService.saveJob(newJob);
+            } catch (Exception e) {
 
-            if (savedJob != null
-                    && savedJob.getId() != null) {
+                /*
+                 * One bad source record must not destroy
+                 * the entire batch.
+                 */
 
-                insertedCount++;
+                skippedCount++;
 
-                newJobsForNotification.add(
-                        savedJob
+                System.err.println(
+                        "Skipping bulk job: "
+                                + dto.getTitle()
+                                + " | reason: "
+                                + e.getMessage()
                 );
             }
         }
 
+
         // ========================================================
-        // FIREBASE NOTIFICATION
-        //
-        // ONLY NEW JOBS
+        // FIREBASE NOTIFICATIONS
         // ========================================================
 
         for (Job savedJob :
@@ -514,39 +577,38 @@ public class AdminServiceImpl implements AdminService {
 
             try {
 
-                firebaseMessagingService.sendNotification(
-                        "New Job Posted",
+                firebaseMessagingService
+                        .sendNotification(
 
-                        String.format(
-                                "%s is now available. Apply now.",
-                                savedJob.getTitle()
-                        ),
+                                "New Job Posted",
 
-                        savedJob.getId(),
+                                String.format(
+                                        "%s is now available. Apply now.",
+                                        savedJob.getTitle()
+                                ),
 
-                        Map.of(
-                                "title",
-                                savedJob.getTitle() == null
-                                        ? "New Job"
-                                        : savedJob.getTitle(),
+                                savedJob.getId(),
 
-                                "body",
-                                savedJob.getLocation() == null
-                                        ? "A new job is available"
-                                        : "A new job is available in "
-                                        + savedJob.getLocation(),
+                                Map.of(
+                                        "title",
+                                        savedJob.getTitle() == null
+                                                ? "New Job"
+                                                : savedJob.getTitle(),
 
-                                "jobId",
-                                String.valueOf(
-                                        savedJob.getId()
+                                        "body",
+                                        savedJob.getLocation() == null
+                                                ? "A new job is available"
+                                                : "A new job is available in "
+                                                + savedJob.getLocation(),
+
+                                        "jobId",
+                                        String.valueOf(
+                                                savedJob.getId()
+                                        )
                                 )
-                        )
-                );
+                        );
 
             } catch (Exception e) {
-
-                // Firebase failure should NOT stop
-                // successful database import.
 
                 System.err.println(
                         "Firebase notification failed for job "
@@ -557,48 +619,238 @@ public class AdminServiceImpl implements AdminService {
             }
         }
 
+
         // ========================================================
-        // FINAL RESULT
+        // RESULT
         // ========================================================
 
         return String.format(
                 "Bulk import completed. "
                         + "Inserted: %d, Updated: %d, Skipped: %d",
-
                 insertedCount,
                 updatedCount,
                 skippedCount
         );
     }
 
+
     // ============================================================
-    // FIND EXISTING JOB
+    // ORGANIZATION / DEPARTMENT RESOLUTION
     // ============================================================
 
-    private Optional<Job> findExistingJob(
-            JobRequest dto
+    private Department resolveOrCreateDepartment(
+            String organization,
+            String officialWebsite
     ) {
 
-        // --------------------------------------------------------
-        // 1. CHECK APPLY LINK
-        // --------------------------------------------------------
+        String normalizedName =
+                normalizeSourceName(
+                        organization
+                );
+
+        Optional<Department> existing =
+                departmentService
+                        .getDepartmentByName(
+                                normalizedName
+                        );
+
+        if (existing.isPresent()) {
+
+            Department department =
+                    existing.get();
+
+            /*
+             * If source provides an official website and
+             * existing department doesn't have one,
+             * enrich the existing record.
+             */
+
+            if ((department.getOfficialWebsite() == null
+                    || department.getOfficialWebsite().isBlank())
+                    && officialWebsite != null
+                    && !officialWebsite.isBlank()) {
+
+                department.setOfficialWebsite(
+                        officialWebsite.trim()
+                );
+
+                department =
+                        departmentService.saveDepartment(
+                                department
+                        );
+            }
+
+            return department;
+        }
+
+
+        /*
+         * Organization does not exist.
+         *
+         * Create it dynamically.
+         *
+         * NO hard-coded department list.
+         */
+
+        Department department =
+                Department.builder()
+                        .name(normalizedName)
+                        .shortName(
+                                generateUniqueShortName(
+                                        normalizedName
+                                )
+                        )
+                        .officialWebsite(
+                                blankToNull(
+                                        officialWebsite
+                                )
+                        )
+                        .build();
+
+        return departmentService.saveDepartment(
+                department
+        );
+    }
+
+
+    // ============================================================
+    // CATEGORY RESOLUTION
+    // ============================================================
+
+    private Category resolveOrCreateCategory(
+            String categoryName
+    ) {
+
+        String normalized =
+                normalizeSourceName(
+                        categoryName
+                );
+
+        Optional<Category> existing =
+                categoryService
+                        .getCategoryByName(
+                                normalized
+                        );
+
+        if (existing.isPresent()) {
+
+            return existing.get();
+        }
+
+
+        /*
+         * Source has provided a category which is not
+         * currently present in the master table.
+         *
+         * Create it dynamically.
+         */
+
+        Category category =
+                Category.builder()
+                        .name(normalized)
+                        .build();
+
+        return categoryService.saveCategory(
+                category
+        );
+    }
+
+
+    // ============================================================
+    // STATE RESOLUTION
+    // ============================================================
+
+    private State resolveState(
+            String stateName
+    ) {
+
+        String normalized =
+                normalizeSourceName(
+                        stateName
+                );
+
+
+        /*
+         * Exact lookup first.
+         */
+
+        Optional<State> exact =
+                stateService.getStateByName(
+                        normalized
+                );
+
+        if (exact.isPresent()) {
+
+            return exact.get();
+        }
+
+
+        /*
+         * Normalized comparison.
+         *
+         * Example:
+         *
+         * Andhra Pradesh
+         * andhra-pradesh
+         * Andhra-Pradesh
+         *
+         * are compared safely.
+         */
+
+        String target =
+                normalizeComparable(
+                        normalized
+                );
+
+        return stateService
+                .getAllStates()
+                .stream()
+                .filter(state ->
+                        normalizeComparable(
+                                state.getName()
+                        ).equals(target)
+                )
+                .findFirst()
+                .orElseThrow(() ->
+                        new EntityNotFoundException(
+                                "Source state not found in "
+                                        + "state master data: "
+                                        + stateName
+                        )
+                );
+    }
+
+
+    // ============================================================
+    // DUPLICATE DETECTION
+    // ============================================================
+
+    private Optional<Job> findExistingBulkJob(
+            BulkJobItem dto
+    ) {
+
+        /*
+         * 1. Apply URL
+         */
 
         if (dto.getApplyUrl() != null
                 && !dto.getApplyUrl().isBlank()) {
 
-            Optional<Job> byApplyLink =
+            Optional<Job> byApply =
                     jobService.findByApplyLink(
                             dto.getApplyUrl()
                     );
 
-            if (byApplyLink.isPresent()) {
-                return byApplyLink;
+            if (byApply.isPresent()) {
+
+                return byApply;
             }
         }
 
-        // --------------------------------------------------------
-        // 2. CHECK PDF NOTIFICATION
-        // --------------------------------------------------------
+
+        /*
+         * 2. Notification PDF
+         */
 
         if (dto.getNotificationUrl() != null
                 && !dto.getNotificationUrl().isBlank()) {
@@ -609,13 +861,15 @@ public class AdminServiceImpl implements AdminService {
                     );
 
             if (byPdf.isPresent()) {
+
                 return byPdf;
             }
         }
 
-        // --------------------------------------------------------
-        // 3. NATURAL KEY
-        // --------------------------------------------------------
+
+        /*
+         * 3. Natural key
+         */
 
         if (dto.getOrganization() != null
                 && !dto.getOrganization().isBlank()
@@ -631,6 +885,7 @@ public class AdminServiceImpl implements AdminService {
                     );
 
             if (byNaturalKey.isPresent()) {
+
                 return byNaturalKey;
             }
         }
@@ -638,28 +893,43 @@ public class AdminServiceImpl implements AdminService {
         return Optional.empty();
     }
 
+
     // ============================================================
-    // BUILD JOB FROM REQUEST
+    // BUILD JOB FROM SOURCE
     // ============================================================
 
-    private Job buildJobFromRequest(
-            JobRequest dto,
+    private Job buildJobFromBulkItem(
+            BulkJobItem dto,
             Category category,
             State state
     ) {
 
         Job.JobBuilder builder =
                 Job.builder()
-                        .title(dto.getTitle())
-                        .organization(dto.getOrganization())
-                        .postName(dto.getPostName())
-                        .qualification(dto.getQualification())
-                        .vacancies(dto.getVacancies())
-                        .salary(dto.getSalary())
-                        .location(dto.getLocation())
-                        .lastDate(dto.getLastDate())
-
-                        // URL mappings
+                        .title(
+                                dto.getTitle()
+                        )
+                        .organization(
+                                dto.getOrganization()
+                        )
+                        .postName(
+                                dto.getPostName()
+                        )
+                        .qualification(
+                                dto.getQualification()
+                        )
+                        .vacancies(
+                                dto.getVacancies()
+                        )
+                        .salary(
+                                dto.getSalary()
+                        )
+                        .location(
+                                dto.getLocation()
+                        )
+                        .lastDate(
+                                dto.getLastDate()
+                        )
                         .pdfNotification(
                                 dto.getNotificationUrl()
                         )
@@ -669,8 +939,6 @@ public class AdminServiceImpl implements AdminService {
                         .officialWebsite(
                                 dto.getOfficialWebsite()
                         )
-
-                        // Job details
                         .ageLimit(
                                 dto.getAgeLimit()
                         )
@@ -683,8 +951,6 @@ public class AdminServiceImpl implements AdminService {
                         .selectionProcess(
                                 dto.getSelectionProcess()
                         )
-
-                        // Category / State
                         .category(
                                 category.getName()
                         )
@@ -692,21 +958,62 @@ public class AdminServiceImpl implements AdminService {
                                 state.getName()
                         );
 
-        // --------------------------------------------------------
-        // POST DATE
-        // --------------------------------------------------------
-
         if (dto.getPostDate() != null) {
+
             builder.postDate(
-                    dto.getPostDate().atStartOfDay()
+                    dto.getPostDate()
+                            .atStartOfDay()
             );
         }
 
         return builder.build();
     }
 
+
     // ============================================================
-    // REQUEST VALIDATION
+    // BULK SOURCE VALIDATION
+    // ============================================================
+
+    private void validateBulkJobItem(
+            BulkJobItem dto
+    ) {
+
+        if (dto.getTitle() == null
+                || dto.getTitle().isBlank()) {
+
+            throw new IllegalArgumentException(
+                    "Source job title is missing."
+            );
+        }
+
+        if (dto.getOrganization() == null
+                || dto.getOrganization().isBlank()) {
+
+            throw new IllegalArgumentException(
+                    "Source organization is missing."
+            );
+        }
+
+        if (dto.getCategory() == null
+                || dto.getCategory().isBlank()) {
+
+            throw new IllegalArgumentException(
+                    "Source category is missing."
+            );
+        }
+
+        if (dto.getState() == null
+                || dto.getState().isBlank()) {
+
+            throw new IllegalArgumentException(
+                    "Source state is missing."
+            );
+        }
+    }
+
+
+    // ============================================================
+    // MANUAL ADMIN JOB VALIDATION
     // ============================================================
 
     private void validateJobRequest(
@@ -714,6 +1021,7 @@ public class AdminServiceImpl implements AdminService {
     ) {
 
         if (request == null) {
+
             throw new IllegalArgumentException(
                     "Job request cannot be null"
             );
@@ -728,21 +1036,259 @@ public class AdminServiceImpl implements AdminService {
         }
 
         if (request.getDepartmentId() == null) {
+
             throw new IllegalArgumentException(
                     "Department ID is required"
             );
         }
 
         if (request.getCategoryId() == null) {
+
             throw new IllegalArgumentException(
                     "Category ID is required"
             );
         }
 
         if (request.getStateId() == null) {
+
             throw new IllegalArgumentException(
                     "State ID is required"
             );
         }
+    }
+
+
+    // ============================================================
+    // MANUAL ADMIN JOB BUILDER
+    // ============================================================
+
+    private Job buildJobFromRequest(
+            JobRequest dto,
+            Category category,
+            State state
+    ) {
+
+        Job.JobBuilder builder =
+                Job.builder()
+                        .title(
+                                dto.getTitle()
+                        )
+                        .organization(
+                                dto.getOrganization()
+                        )
+                        .postName(
+                                dto.getPostName()
+                        )
+                        .qualification(
+                                dto.getQualification()
+                        )
+                        .vacancies(
+                                dto.getVacancies()
+                        )
+                        .salary(
+                                dto.getSalary()
+                        )
+                        .location(
+                                dto.getLocation()
+                        )
+                        .lastDate(
+                                dto.getLastDate()
+                        )
+                        .pdfNotification(
+                                dto.getNotificationUrl()
+                        )
+                        .applyLink(
+                                dto.getApplyUrl()
+                        )
+                        .officialWebsite(
+                                dto.getOfficialWebsite()
+                        )
+                        .ageLimit(
+                                dto.getAgeLimit()
+                        )
+                        .experience(
+                                dto.getExperience()
+                        )
+                        .applicationFee(
+                                dto.getApplicationFee()
+                        )
+                        .selectionProcess(
+                                dto.getSelectionProcess()
+                        )
+                        .category(
+                                category.getName()
+                        )
+                        .state(
+                                state.getName()
+                        );
+
+        if (dto.getPostDate() != null) {
+
+            builder.postDate(
+                    dto.getPostDate()
+                            .atStartOfDay()
+            );
+        }
+
+        return builder.build();
+    }
+
+
+    // ============================================================
+    // TEXT NORMALIZATION
+    // ============================================================
+
+    private String normalizeSourceName(
+            String value
+    ) {
+
+        if (value == null) {
+
+            return null;
+        }
+
+        return value
+                .replace('\u00A0', ' ')
+                .trim()
+                .replaceAll("\\s+", " ");
+    }
+
+
+    private String normalizeComparable(
+            String value
+    ) {
+
+        if (value == null) {
+
+            return "";
+        }
+
+        return value
+                .toLowerCase()
+                .replaceAll(
+                        "[^a-z0-9]",
+                        ""
+                );
+    }
+
+
+    private String blankToNull(
+            String value
+    ) {
+
+        if (value == null
+                || value.isBlank()) {
+
+            return null;
+        }
+
+        return value.trim();
+    }
+
+
+    // ============================================================
+    // AUTOMATIC DEPARTMENT SHORT NAME
+    // ============================================================
+
+    private String generateUniqueShortName(
+            String organization
+    ) {
+
+        String cleaned =
+                organization
+                        .replaceAll(
+                                "[^A-Za-z0-9 ]",
+                                " "
+                        )
+                        .trim();
+
+
+        if (cleaned.isBlank()) {
+
+            cleaned = "ORG";
+        }
+
+
+        String[] words =
+                cleaned.split("\\s+");
+
+
+        StringBuilder builder =
+                new StringBuilder();
+
+
+        for (String word : words) {
+
+            if (!word.isBlank()) {
+
+                builder.append(
+                        Character.toUpperCase(
+                                word.charAt(0)
+                        )
+                );
+            }
+        }
+
+
+        String base =
+                builder.length() > 0
+                        ? builder.toString()
+                        : "ORG";
+
+
+        /*
+         * Department.shortName has max length 50.
+         */
+
+        if (base.length() > 45) {
+
+            base =
+                    base.substring(
+                            0,
+                            45
+                    );
+        }
+
+
+        String candidate =
+                base;
+
+        int suffix = 2;
+
+
+        while (
+                departmentService
+                        .getDepartmentByShortName(
+                                candidate
+                        )
+                        .isPresent()
+        ) {
+
+            String suffixText =
+                    String.valueOf(
+                            suffix++
+                    );
+
+            int maxBaseLength =
+                    50
+                            - suffixText.length();
+
+
+            String shortenedBase =
+                    base.length() > maxBaseLength
+                            ? base.substring(
+                                    0,
+                                    maxBaseLength
+                            )
+                            : base;
+
+
+            candidate =
+                    shortenedBase
+                            + suffixText;
+        }
+
+
+        return candidate;
     }
 }

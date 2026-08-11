@@ -15,8 +15,9 @@ public interface DepartmentService {
 
     Optional<Department> getDepartmentByShortName(String shortName);
 
+    Optional<Department> getDepartmentByName(String name);
+
     Department updateDepartment(Long id, Department department);
 
     void deleteDepartment(Long id);
-
 }

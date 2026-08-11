@@ -31,29 +31,77 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public Optional<Department> getDepartmentByShortName(String shortName) {
-        return departmentRepository.findByShortName(shortName);
+    public Optional<Department> getDepartmentByShortName(
+            String shortName
+    ) {
+
+        if (shortName == null || shortName.isBlank()) {
+            return Optional.empty();
+        }
+
+        return departmentRepository.findByShortName(
+                shortName.trim()
+        );
     }
 
     @Override
-    public Department updateDepartment(Long id, Department department) {
+    public Optional<Department> getDepartmentByName(
+            String name
+    ) {
 
-        Department existingDepartment = departmentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Department not found with id: " + id));
+        if (name == null || name.isBlank()) {
+            return Optional.empty();
+        }
 
-        existingDepartment.setName(department.getName());
-        existingDepartment.setShortName(department.getShortName());
-        existingDepartment.setLogoPath(department.getLogoPath());
-        existingDepartment.setOfficialWebsite(department.getOfficialWebsite());
+        return departmentRepository.findByName(
+                name.trim()
+        );
+    }
 
-        return departmentRepository.save(existingDepartment);
+    @Override
+    public Department updateDepartment(
+            Long id,
+            Department department
+    ) {
+
+        Department existingDepartment =
+                departmentRepository.findById(id)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Department not found with id: "
+                                                + id
+                                )
+                        );
+
+        existingDepartment.setName(
+                department.getName()
+        );
+
+        existingDepartment.setShortName(
+                department.getShortName()
+        );
+
+        existingDepartment.setLogoPath(
+                department.getLogoPath()
+        );
+
+        existingDepartment.setOfficialWebsite(
+                department.getOfficialWebsite()
+        );
+
+        return departmentRepository.save(
+                existingDepartment
+        );
     }
 
     @Override
     public void deleteDepartment(Long id) {
 
         if (!departmentRepository.existsById(id)) {
-            throw new RuntimeException("Department not found with id: " + id);
+
+            throw new RuntimeException(
+                    "Department not found with id: " + id
+            );
         }
 
         departmentRepository.deleteById(id);

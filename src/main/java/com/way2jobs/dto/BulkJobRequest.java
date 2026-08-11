@@ -11,6 +11,5 @@ import java.util.List;
 @AllArgsConstructor
 public class BulkJobRequest {
 
-	private List<JobRequest> jobs;
-
+    private List<BulkJobItem> jobs;
 }
