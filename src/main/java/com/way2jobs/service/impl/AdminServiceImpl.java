@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -33,15 +32,10 @@ import java.util.Optional;
 public class AdminServiceImpl implements AdminService {
 
     private final JobService jobService;
-
     private final DepartmentService departmentService;
-
     private final CategoryService categoryService;
-
     private final StateService stateService;
-
     private final FirebaseMessagingService firebaseMessagingService;
-
     private final JwtUtil jwtUtil;
 
 
@@ -148,8 +142,6 @@ public class AdminServiceImpl implements AdminService {
 
     // ============================================================
     // CREATE SINGLE JOB
-    //
-    // Existing Admin CRUD continues to use database IDs.
     // ============================================================
 
     @Transactional
@@ -208,8 +200,6 @@ public class AdminServiceImpl implements AdminService {
 
     // ============================================================
     // UPDATE SINGLE JOB
-    //
-    // Existing Admin CRUD remains ID based.
     // ============================================================
 
     @Transactional
@@ -382,23 +372,22 @@ public class AdminServiceImpl implements AdminService {
 
 
     // ============================================================
-    // 🔥 SOURCE-DRIVEN BULK IMPORT
+    // SOURCE-DRIVEN BULK IMPORT
     //
     // IMPORTANT:
     //
-    // Python DOES NOT send:
-    //
-    // departmentId
-    // categoryId
-    // stateId
-    //
-    // Python sends the actual source values:
+    // Python sends:
     //
     // organization
     // category
     // state
     //
-    // Backend resolves those values.
+    // Python does NOT send:
+    //
+    // departmentId
+    // categoryId
+    // stateId
+    //
     // ============================================================
 
     @Transactional
@@ -417,14 +406,13 @@ public class AdminServiceImpl implements AdminService {
         }
 
         int insertedCount = 0;
-
         int updatedCount = 0;
-
         int skippedCount = 0;
 
-        List<Job> newJobsForNotification =
-                new ArrayList<>();
 
+        // ========================================================
+        // PROCESS EVERY JOB
+        // ========================================================
 
         for (BulkJobItem dto :
                 request.getJobs()) {
@@ -438,35 +426,26 @@ public class AdminServiceImpl implements AdminService {
 
             try {
 
+                // ------------------------------------------------
+                // VALIDATE
+                // ------------------------------------------------
+
                 validateBulkJobItem(dto);
 
 
-                // =================================================
-                // ORGANIZATION
-                //
-                // Source → organization name
-                //
-                // Existing department:
-                // use it.
-                //
-                // New organization:
-                // automatically create department.
-                // =================================================
+                // ------------------------------------------------
+                // RESOLVE ORGANIZATION
+                // ------------------------------------------------
 
-                Department department =
-                        resolveOrCreateDepartment(
-                                dto.getOrganization(),
-                                dto.getOfficialWebsite()
-                        );
+                resolveOrCreateDepartment(
+                        dto.getOrganization(),
+                        dto.getOfficialWebsite()
+                );
 
 
-                // =================================================
-                // CATEGORY
-                //
-                // Source → category name
-                //
-                // No database ID from scraper.
-                // =================================================
+                // ------------------------------------------------
+                // RESOLVE CATEGORY
+                // ------------------------------------------------
 
                 Category category =
                         resolveOrCreateCategory(
@@ -474,13 +453,9 @@ public class AdminServiceImpl implements AdminService {
                         );
 
 
-                // =================================================
-                // STATE
-                //
-                // Source → state name
-                //
-                // State master must already contain it.
-                // =================================================
+                // ------------------------------------------------
+                // RESOLVE STATE
+                // ------------------------------------------------
 
                 State state =
                         resolveState(
@@ -488,9 +463,9 @@ public class AdminServiceImpl implements AdminService {
                         );
 
 
-                // =================================================
+                // ------------------------------------------------
                 // DUPLICATE DETECTION
-                // =================================================
+                // ------------------------------------------------
 
                 Optional<Job> existingJob =
                         findExistingBulkJob(dto);
@@ -502,9 +477,6 @@ public class AdminServiceImpl implements AdminService {
 
                 if (existingJob.isPresent()) {
 
-                    Job oldJob =
-                            existingJob.get();
-
                     Job incomingJob =
                             buildJobFromBulkItem(
                                     dto,
@@ -513,7 +485,7 @@ public class AdminServiceImpl implements AdminService {
                             );
 
                     jobService.updateJob(
-                            oldJob.getId(),
+                            existingJob.get().getId(),
                             incomingJob
                     );
 
@@ -543,24 +515,15 @@ public class AdminServiceImpl implements AdminService {
                         && savedJob.getId() != null) {
 
                     insertedCount++;
-
-                    newJobsForNotification.add(
-                            savedJob
-                    );
                 }
 
             } catch (Exception e) {
-
-                /*
-                 * One bad source record must not destroy
-                 * the entire batch.
-                 */
 
                 skippedCount++;
 
                 System.err.println(
                         "Skipping bulk job: "
-                                + dto.getTitle()
+                                + safeTitle(dto)
                                 + " | reason: "
                                 + e.getMessage()
                 );
@@ -569,60 +532,21 @@ public class AdminServiceImpl implements AdminService {
 
 
         // ========================================================
-        // FIREBASE NOTIFICATIONS
+        // IMPORTANT PERFORMANCE CHANGE
+        // ========================================================
+        //
+        // Firebase notifications are NOT sent synchronously here.
+        //
+        // Previously the importer waited for Firebase notification
+        // processing for every newly inserted job before returning
+        // the HTTP response.
+        //
+        // The bulk importer must finish the database operation and
+        // return the result to the scraper as quickly as possible.
+        //
+        // Notifications can be handled separately later.
         // ========================================================
 
-        for (Job savedJob :
-                newJobsForNotification) {
-
-            try {
-
-                firebaseMessagingService
-                        .sendNotification(
-
-                                "New Job Posted",
-
-                                String.format(
-                                        "%s is now available. Apply now.",
-                                        savedJob.getTitle()
-                                ),
-
-                                savedJob.getId(),
-
-                                Map.of(
-                                        "title",
-                                        savedJob.getTitle() == null
-                                                ? "New Job"
-                                                : savedJob.getTitle(),
-
-                                        "body",
-                                        savedJob.getLocation() == null
-                                                ? "A new job is available"
-                                                : "A new job is available in "
-                                                + savedJob.getLocation(),
-
-                                        "jobId",
-                                        String.valueOf(
-                                                savedJob.getId()
-                                        )
-                                )
-                        );
-
-            } catch (Exception e) {
-
-                System.err.println(
-                        "Firebase notification failed for job "
-                                + savedJob.getId()
-                                + ": "
-                                + e.getMessage()
-                );
-            }
-        }
-
-
-        // ========================================================
-        // RESULT
-        // ========================================================
 
         return String.format(
                 "Bulk import completed. "
@@ -659,12 +583,6 @@ public class AdminServiceImpl implements AdminService {
             Department department =
                     existing.get();
 
-            /*
-             * If source provides an official website and
-             * existing department doesn't have one,
-             * enrich the existing record.
-             */
-
             if ((department.getOfficialWebsite() == null
                     || department.getOfficialWebsite().isBlank())
                     && officialWebsite != null
@@ -683,14 +601,6 @@ public class AdminServiceImpl implements AdminService {
             return department;
         }
 
-
-        /*
-         * Organization does not exist.
-         *
-         * Create it dynamically.
-         *
-         * NO hard-coded department list.
-         */
 
         Department department =
                 Department.builder()
@@ -738,13 +648,6 @@ public class AdminServiceImpl implements AdminService {
         }
 
 
-        /*
-         * Source has provided a category which is not
-         * currently present in the master table.
-         *
-         * Create it dynamically.
-         */
-
         Category category =
                 Category.builder()
                         .name(normalized)
@@ -769,11 +672,6 @@ public class AdminServiceImpl implements AdminService {
                         stateName
                 );
 
-
-        /*
-         * Exact lookup first.
-         */
-
         Optional<State> exact =
                 stateService.getStateByName(
                         normalized
@@ -784,18 +682,6 @@ public class AdminServiceImpl implements AdminService {
             return exact.get();
         }
 
-
-        /*
-         * Normalized comparison.
-         *
-         * Example:
-         *
-         * Andhra Pradesh
-         * andhra-pradesh
-         * Andhra-Pradesh
-         *
-         * are compared safely.
-         */
 
         String target =
                 normalizeComparable(
@@ -829,9 +715,9 @@ public class AdminServiceImpl implements AdminService {
             BulkJobItem dto
     ) {
 
-        /*
-         * 1. Apply URL
-         */
+        // --------------------------------------------------------
+        // 1. APPLY URL
+        // --------------------------------------------------------
 
         if (dto.getApplyUrl() != null
                 && !dto.getApplyUrl().isBlank()) {
@@ -848,9 +734,9 @@ public class AdminServiceImpl implements AdminService {
         }
 
 
-        /*
-         * 2. Notification PDF
-         */
+        // --------------------------------------------------------
+        // 2. NOTIFICATION PDF
+        // --------------------------------------------------------
 
         if (dto.getNotificationUrl() != null
                 && !dto.getNotificationUrl().isBlank()) {
@@ -867,9 +753,9 @@ public class AdminServiceImpl implements AdminService {
         }
 
 
-        /*
-         * 3. Natural key
-         */
+        // --------------------------------------------------------
+        // 3. NATURAL KEY
+        // --------------------------------------------------------
 
         if (dto.getOrganization() != null
                 && !dto.getOrganization().isBlank()
@@ -895,103 +781,133 @@ public class AdminServiceImpl implements AdminService {
 
 
     // ============================================================
-    // BUILD JOB FROM SOURCE
+    // BUILD JOB FROM BULK ITEM
     // ============================================================
 
     private Job buildJobFromBulkItem(
-        BulkJobItem dto,
-        Category category,
-        State state
-) {
+            BulkJobItem dto,
+            Category category,
+            State state
+    ) {
 
-    Job.JobBuilder builder =
-            Job.builder()
+        Job.JobBuilder builder =
+                Job.builder()
 
-                    // ==========================================
-                    // SOURCE IDENTITY
-                    // ==========================================
+                        // ----------------------------------------
+                        // SOURCE IDENTITY
+                        // ----------------------------------------
 
-                    .jobId(dto.getJobId())
-                    .source(dto.getSource())
+                        .jobId(
+                                dto.getJobId()
+                        )
 
-                    // ==========================================
-                    // JOB DATA
-                    // ==========================================
+                        .source(
+                                dto.getSource()
+                        )
 
-                    .title(dto.getTitle())
+                        // ----------------------------------------
+                        // JOB DATA
+                        // ----------------------------------------
 
-                    .organization(dto.getOrganization())
+                        .title(
+                                dto.getTitle()
+                        )
 
-                    .postName(dto.getPostName())
+                        .organization(
+                                dto.getOrganization()
+                        )
 
-                    .qualification(dto.getQualification())
+                        .postName(
+                                dto.getPostName()
+                        )
 
-                    .vacancies(dto.getVacancies())
+                        .qualification(
+                                dto.getQualification()
+                        )
 
-                    .salary(dto.getSalary())
+                        .vacancies(
+                                dto.getVacancies()
+                        )
 
-                    .location(dto.getLocation())
+                        .salary(
+                                dto.getSalary()
+                        )
 
-                    .lastDate(dto.getLastDate())
+                        .location(
+                                dto.getLocation()
+                        )
 
-                    // ==========================================
-                    // IMPORTANT LINKS
-                    // ==========================================
+                        .lastDate(
+                                dto.getLastDate()
+                        )
 
-                    .pdfNotification(
-                            dto.getNotificationUrl()
-                    )
+                        // ----------------------------------------
+                        // LINKS
+                        // ----------------------------------------
 
-                    .applyLink(
-                            dto.getApplyUrl()
-                    )
+                        .pdfNotification(
+                                dto.getNotificationUrl()
+                        )
 
-                    .officialWebsite(
-                            dto.getOfficialWebsite()
-                    )
+                        .applyLink(
+                                dto.getApplyUrl()
+                        )
 
-                    // ==========================================
-                    // ELIGIBILITY
-                    // ==========================================
+                        .officialWebsite(
+                                dto.getOfficialWebsite()
+                        )
 
-                    .ageLimit(dto.getAgeLimit())
+                        // ----------------------------------------
+                        // ELIGIBILITY
+                        // ----------------------------------------
 
-                    .experience(dto.getExperience())
+                        .ageLimit(
+                                dto.getAgeLimit()
+                        )
 
-                    .applicationFee(
-                            dto.getApplicationFee()
-                    )
+                        .experience(
+                                dto.getExperience()
+                        )
 
-                    .selectionProcess(
-                            dto.getSelectionProcess()
-                    )
+                        .applicationFee(
+                                dto.getApplicationFee()
+                        )
 
-                    // ==========================================
-                    // SOURCE RESOLVED MASTER VALUES
-                    // ==========================================
+                        .selectionProcess(
+                                dto.getSelectionProcess()
+                        )
 
-                    .category(category.getName())
+                        // ----------------------------------------
+                        // MASTER VALUES
+                        // ----------------------------------------
 
-                    .state(state.getName());
+                        .category(
+                                category.getName()
+                        )
 
-    // ==========================================
-    // POST DATE
-    // ==========================================
+                        .state(
+                                state.getName()
+                        );
 
-    if (dto.getPostDate() != null) {
 
-        builder.postDate(
-                dto.getPostDate()
-                        .atStartOfDay()
-        );
+        // --------------------------------------------------------
+        // POST DATE
+        // --------------------------------------------------------
+
+        if (dto.getPostDate() != null) {
+
+            builder.postDate(
+                    dto.getPostDate()
+                            .atStartOfDay()
+            );
+        }
+
+        return builder.build();
     }
-
-    return builder.build();
-}
 
 
     // ============================================================
-    // BULK SOURCE VALIDATION
+    // BULK VALIDATION
     // ============================================================
 
     private void validateBulkJobItem(
@@ -1142,6 +1058,7 @@ public class AdminServiceImpl implements AdminService {
                                 state.getName()
                         );
 
+
         if (dto.getPostDate() != null) {
 
             builder.postDate(
@@ -1170,7 +1087,10 @@ public class AdminServiceImpl implements AdminService {
         return value
                 .replace('\u00A0', ' ')
                 .trim()
-                .replaceAll("\\s+", " ");
+                .replaceAll(
+                        "\\s+",
+                        " "
+                );
     }
 
 
@@ -1256,10 +1176,6 @@ public class AdminServiceImpl implements AdminService {
                         : "ORG";
 
 
-        /*
-         * Department.shortName has max length 50.
-         */
-
         if (base.length() > 45) {
 
             base =
@@ -1310,5 +1226,23 @@ public class AdminServiceImpl implements AdminService {
 
 
         return candidate;
+    }
+
+
+    // ============================================================
+    // SAFE LOGGING
+    // ============================================================
+
+    private String safeTitle(
+            BulkJobItem dto
+    ) {
+
+        if (dto == null
+                || dto.getTitle() == null) {
+
+            return "UNKNOWN";
+        }
+
+        return dto.getTitle();
     }
 }
