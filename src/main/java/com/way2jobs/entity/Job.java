@@ -19,6 +19,7 @@ public class Job {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
     // ============================================================
     // BASIC JOB IDENTIFICATION
     // ============================================================
@@ -116,22 +117,90 @@ public class Job {
 
 
     // ============================================================
+    // NEW — USER ENGAGEMENT
+    // ============================================================
+
+    /**
+     * Total number of times this job was viewed.
+     */
+    @Column(name = "view_count", nullable = false)
+    private Long viewCount;
+
+
+    /**
+     * Total number of likes received by this job.
+     */
+    @Column(name = "like_count", nullable = false)
+    private Long likeCount;
+
+
+    // ============================================================
+    // NEW — IMPORT TRACKING
+    // ============================================================
+
+    /**
+     * Time when the job was imported/updated by the scraper.
+     *
+     * Used for:
+     * Latest Jobs
+     * Recent Imports
+     */
+    @Column(name = "imported_at")
+    private LocalDateTime importedAt;
+
+
+    // ============================================================
     // DEFAULT VALUES
     // ============================================================
 
-    @PrePersist
-    public void prePersist() {
+   @PrePersist
+public void prePersist() {
 
-        if (createdAt == null) {
-            createdAt = LocalDateTime.now();
+    if (createdAt == null) {
+        createdAt = LocalDateTime.now();
+    }
+
+    if (postDate == null) {
+        postDate = createdAt;
+    }
+
+    if (importedAt == null) {
+        importedAt = createdAt;
+    }
+
+    if (viewCount == null) {
+        viewCount = 0L;
+    }
+
+    if (likeCount == null) {
+        likeCount = 0L;
+    }
+
+    if (isActive == null) {
+        isActive = true;
+    }
+}
+
+
+    // ============================================================
+    // UPDATE IMPORT TIME
+    // ============================================================
+
+    @PreUpdate
+    public void preUpdate() {
+
+        if (viewCount == null) {
+            viewCount = 0L;
         }
 
-        if (postDate == null) {
-            postDate = createdAt;
+        if (likeCount == null) {
+            likeCount = 0L;
         }
 
-        if (isActive == null) {
-            isActive = true;
+        if (importedAt == null) {
+            importedAt = LocalDateTime.now();
         }
     }
+
+
 }

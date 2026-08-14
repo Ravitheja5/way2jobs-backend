@@ -17,6 +17,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/jobs")
 @RequiredArgsConstructor
@@ -27,6 +30,7 @@ public class JobController {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
 
+
     // =========================================================
     // CREATE JOB
     // =========================================================
@@ -34,8 +38,10 @@ public class JobController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Job createJob(@RequestBody Job job) {
+
         return jobService.saveJob(job);
     }
+
 
     // =========================================================
     // GET ALL JOBS
@@ -45,7 +51,10 @@ public class JobController {
     public ResponseEntity<Page<JobCardResponse>> getAllJobs(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
-            @RequestHeader(value = "Authorization", required = false)
+            @RequestHeader(
+                    value = "Authorization",
+                    required = false
+            )
             String authorization) {
 
         Pageable pageable = PageRequest.of(
@@ -68,6 +77,7 @@ public class JobController {
         return ResponseEntity.ok(response);
     }
 
+
     // =========================================================
     // GET JOB BY ID
     // =========================================================
@@ -75,7 +85,10 @@ public class JobController {
     @GetMapping("/{id}")
     public ResponseEntity<JobDetailResponse> getJobById(
             @PathVariable Long id,
-            @RequestHeader(value = "Authorization", required = false)
+            @RequestHeader(
+                    value = "Authorization",
+                    required = false
+            )
             String authorization) {
 
         Job job = jobService.getJobById(id)
@@ -96,6 +109,7 @@ public class JobController {
         );
     }
 
+
     // =========================================================
     // UPDATE JOB
     // =========================================================
@@ -108,22 +122,22 @@ public class JobController {
         return jobService.updateJob(id, job);
     }
 
+
     // =========================================================
     // DELETE JOB
     // =========================================================
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteJob(@PathVariable Long id) {
+    public void deleteJob(
+            @PathVariable Long id) {
 
         jobService.deleteJob(id);
     }
 
+
     // =========================================================
     // GET JOBS BY STATE
-    // Example:
-    // /api/jobs/state/AP
-    // /api/jobs/state/Telangana
     // =========================================================
 
     @GetMapping("/state/{state}")
@@ -131,7 +145,10 @@ public class JobController {
             @PathVariable String state,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
-            @RequestHeader(value = "Authorization", required = false)
+            @RequestHeader(
+                    value = "Authorization",
+                    required = false
+            )
             String authorization) {
 
         Pageable pageable = PageRequest.of(
@@ -140,7 +157,10 @@ public class JobController {
         );
 
         Page<JobCardResponse> response =
-                jobService.getJobsByState(state, pageable)
+                jobService.getJobsByState(
+                                state,
+                                pageable
+                        )
                         .map(job ->
                                 JobMapper.toJobCard(
                                         job,
@@ -154,6 +174,7 @@ public class JobController {
         return ResponseEntity.ok(response);
     }
 
+
     // =========================================================
     // GET ALL INDIA JOBS
     // =========================================================
@@ -162,7 +183,10 @@ public class JobController {
     public ResponseEntity<Page<JobCardResponse>> getAllIndiaJobs(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
-            @RequestHeader(value = "Authorization", required = false)
+            @RequestHeader(
+                    value = "Authorization",
+                    required = false
+            )
             String authorization) {
 
         Pageable pageable = PageRequest.of(
@@ -185,6 +209,241 @@ public class JobController {
         return ResponseEntity.ok(response);
     }
 
+
+    // =========================================================
+    // NEW — MOST VIEWED JOBS
+    // =========================================================
+    //
+    // GET:
+    // /api/jobs/most-viewed?page=0&size=20
+    //
+    // =========================================================
+
+    @GetMapping("/most-viewed")
+    public ResponseEntity<Page<JobCardResponse>> getMostViewedJobs(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestHeader(
+                    value = "Authorization",
+                    required = false
+            )
+            String authorization) {
+
+        Pageable pageable = PageRequest.of(
+                Math.max(page, 0),
+                Math.max(size, 1)
+        );
+
+        Page<JobCardResponse> response =
+                jobService.getMostViewedJobs(pageable)
+                        .map(job ->
+                                JobMapper.toJobCard(
+                                        job,
+                                        isJobSaved(
+                                                job.getId(),
+                                                authorization
+                                        )
+                                )
+                        );
+
+        return ResponseEntity.ok(response);
+    }
+
+
+    // =========================================================
+    // NEW — LATEST JOBS
+    // =========================================================
+    //
+    // Based on importedAt.
+    //
+    // GET:
+    // /api/jobs/latest?page=0&size=20
+    //
+    // =========================================================
+
+    @GetMapping("/latest")
+    public ResponseEntity<Page<JobCardResponse>> getLatestJobs(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestHeader(
+                    value = "Authorization",
+                    required = false
+            )
+            String authorization) {
+
+        Pageable pageable = PageRequest.of(
+                Math.max(page, 0),
+                Math.max(size, 1)
+        );
+
+        Page<JobCardResponse> response =
+                jobService.getLatestJobs(pageable)
+                        .map(job ->
+                                JobMapper.toJobCard(
+                                        job,
+                                        isJobSaved(
+                                                job.getId(),
+                                                authorization
+                                        )
+                                )
+                        );
+
+        return ResponseEntity.ok(response);
+    }
+
+
+    // =========================================================
+    // NEW — EXPIRING SOON
+    // =========================================================
+    //
+    // Jobs expiring within 6 days.
+    //
+    // GET:
+    // /api/jobs/expiring-soon?page=0&size=20
+    //
+    // =========================================================
+
+    @GetMapping("/expiring-soon")
+    public ResponseEntity<Page<JobCardResponse>> getExpiringSoonJobs(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestHeader(
+                    value = "Authorization",
+                    required = false
+            )
+            String authorization) {
+
+        Pageable pageable = PageRequest.of(
+                Math.max(page, 0),
+                Math.max(size, 1)
+        );
+
+        Page<JobCardResponse> response =
+                jobService.getExpiringSoonJobs(pageable)
+                        .map(job ->
+                                JobMapper.toJobCard(
+                                        job,
+                                        isJobSaved(
+                                                job.getId(),
+                                                authorization
+                                        )
+                                )
+                        );
+
+        return ResponseEntity.ok(response);
+    }
+
+
+    // =========================================================
+    // NEW — RECORD JOB VIEW
+    // =========================================================
+    //
+    // POST:
+    // /api/jobs/{id}/view
+    //
+    // =========================================================
+
+    @PostMapping("/{id}/view")
+    public ResponseEntity<Map<String, Object>> incrementViewCount(
+            @PathVariable Long id) {
+
+        Job job = jobService.incrementViewCount(id);
+
+        Map<String, Object> response =
+                new LinkedHashMap<>();
+
+        response.put("jobId", job.getId());
+        response.put("viewCount", job.getViewCount());
+
+        return ResponseEntity.ok(response);
+    }
+
+
+    // =========================================================
+    // NEW — LIKE JOB
+    // =========================================================
+    //
+    // POST:
+    // /api/jobs/{id}/like
+    //
+    // NOTE:
+    // Proper user-level duplicate like prevention will be added
+    // in the dedicated JobLike implementation stage.
+    //
+    // =========================================================
+
+    @PostMapping("/{id}/like")
+    public ResponseEntity<Map<String, Object>> likeJob(
+            @PathVariable Long id) {
+
+        Job job = jobService.incrementLikeCount(id);
+
+        Map<String, Object> response =
+                new LinkedHashMap<>();
+
+        response.put("jobId", job.getId());
+        response.put("liked", true);
+        response.put("likeCount", job.getLikeCount());
+
+        return ResponseEntity.ok(response);
+    }
+
+
+    // =========================================================
+    // NEW — UNLIKE JOB
+    // =========================================================
+    //
+    // DELETE:
+    // /api/jobs/{id}/like
+    //
+    // =========================================================
+
+    @DeleteMapping("/{id}/like")
+    public ResponseEntity<Map<String, Object>> unlikeJob(
+            @PathVariable Long id) {
+
+        Job job = jobService.decrementLikeCount(id);
+
+        Map<String, Object> response =
+                new LinkedHashMap<>();
+
+        response.put("jobId", job.getId());
+        response.put("liked", false);
+        response.put("likeCount", job.getLikeCount());
+
+        return ResponseEntity.ok(response);
+    }
+
+
+    // =========================================================
+    // NEW — FILTER COUNTS
+    // =========================================================
+    //
+    // GET:
+    // /api/jobs/filter-counts
+    //
+    // =========================================================
+
+    @GetMapping("/filter-counts")
+    public ResponseEntity<Map<String, Object>> getFilterCounts() {
+
+        Map<String, Object> response =
+                new LinkedHashMap<>();
+
+        response.put(
+                "total",
+                jobService.getTotalActiveJobs()
+        );
+
+        response.put(
+                "expiringSoon",
+                jobService.getExpiringSoonJobCount()
+        );
+
+        return ResponseEntity.ok(response);
+    }
+
+
     // =========================================================
     // CHECK WHETHER JOB IS SAVED
     // =========================================================
@@ -200,21 +459,26 @@ public class JobController {
             return false;
         }
 
-        String token = authorization.startsWith("Bearer ")
-                ? authorization.substring(7)
-                : authorization;
+        String token =
+                authorization.startsWith("Bearer ")
+                        ? authorization.substring(7)
+                        : authorization;
 
         try {
 
-            String email = jwtUtil.extractEmail(token);
+            String email =
+                    jwtUtil.extractEmail(token);
 
-            if (email == null || email.isBlank()) {
+            if (email == null ||
+                    email.isBlank()) {
+
                 return false;
             }
 
-            User user = userRepository
-                    .findByEmail(email)
-                    .orElse(null);
+            User user =
+                    userRepository
+                            .findByEmail(email)
+                            .orElse(null);
 
             return user != null &&
                     savedJobRepository.existsByUserAndJobId(
