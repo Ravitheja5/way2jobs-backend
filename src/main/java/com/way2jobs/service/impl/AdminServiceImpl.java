@@ -10,6 +10,7 @@ import com.way2jobs.entity.Category;
 import com.way2jobs.entity.Department;
 import com.way2jobs.entity.Job;
 import com.way2jobs.entity.State;
+import com.way2jobs.notification.service.NotificationService;
 import com.way2jobs.security.JwtUtil;
 import com.way2jobs.service.AdminService;
 import com.way2jobs.service.CategoryService;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -36,6 +38,7 @@ public class AdminServiceImpl implements AdminService {
     private final CategoryService categoryService;
     private final StateService stateService;
     private final FirebaseMessagingService firebaseMessagingService;
+    private final NotificationService notificationService;
     private final JwtUtil jwtUtil;
 
 
@@ -373,21 +376,6 @@ public class AdminServiceImpl implements AdminService {
 
     // ============================================================
     // SOURCE-DRIVEN BULK IMPORT
-    //
-    // IMPORTANT:
-    //
-    // Python sends:
-    //
-    // organization
-    // category
-    // state
-    //
-    // Python does NOT send:
-    //
-    // departmentId
-    // categoryId
-    // stateId
-    //
     // ============================================================
 
     @Transactional
@@ -532,21 +520,101 @@ public class AdminServiceImpl implements AdminService {
 
 
         // ========================================================
-        // IMPORTANT PERFORMANCE CHANGE
-        // ========================================================
-        //
-        // Firebase notifications are NOT sent synchronously here.
-        //
-        // Previously the importer waited for Firebase notification
-        // processing for every newly inserted job before returning
-        // the HTTP response.
-        //
-        // The bulk importer must finish the database operation and
-        // return the result to the scraper as quickly as possible.
-        //
-        // Notifications can be handled separately later.
+        // CREATE ONE DATABASE NOTIFICATION
         // ========================================================
 
+        if (insertedCount > 0) {
+
+            String title =
+                    "New Government Jobs";
+
+            String body =
+                    insertedCount
+                            + " new government job"
+                            + (insertedCount == 1
+                            ? ""
+                            : "s")
+                            + " have been added to Way2Jobs.";
+
+
+            // ----------------------------------------------------
+            // SAVE NOTIFICATION TO DATABASE
+            // ----------------------------------------------------
+
+            try {
+
+                notificationService.createNotification(
+                        title,
+                        body,
+                        "BULK_IMPORT"
+                );
+
+            } catch (Exception e) {
+
+                /*
+                 * Notification database failure must not
+                 * destroy successful job import.
+                 */
+
+                System.err.println(
+                        "Notification DB save failed: "
+                                + e.getMessage()
+                );
+            }
+
+
+            // ----------------------------------------------------
+            // SEND ONE FIREBASE NOTIFICATION
+            // ----------------------------------------------------
+
+            try {
+
+                Map<String, String> data =
+                        new HashMap<>();
+
+                data.put(
+                        "type",
+                        "BULK_IMPORT"
+                );
+
+                data.put(
+                        "insertedCount",
+                        String.valueOf(
+                                insertedCount
+                        )
+                );
+
+                data.put(
+                        "screen",
+                        "notifications"
+                );
+
+
+                firebaseMessagingService.sendNotification(
+                        title,
+                        body,
+                        null,
+                        data
+                );
+
+            } catch (Exception e) {
+
+                /*
+                 * Firebase failure must NOT make the
+                 * successful bulk import fail.
+                 */
+
+                System.err.println(
+                        "Firebase notification failed: "
+                                + e.getMessage()
+                );
+            }
+        }
+
+
+        // ========================================================
+        // FINAL RESPONSE
+        // ========================================================
 
         return String.format(
                 "Bulk import completed. "
@@ -793,10 +861,6 @@ public class AdminServiceImpl implements AdminService {
         Job.JobBuilder builder =
                 Job.builder()
 
-                        // ----------------------------------------
-                        // SOURCE IDENTITY
-                        // ----------------------------------------
-
                         .jobId(
                                 dto.getJobId()
                         )
@@ -804,10 +868,6 @@ public class AdminServiceImpl implements AdminService {
                         .source(
                                 dto.getSource()
                         )
-
-                        // ----------------------------------------
-                        // JOB DATA
-                        // ----------------------------------------
 
                         .title(
                                 dto.getTitle()
@@ -841,10 +901,6 @@ public class AdminServiceImpl implements AdminService {
                                 dto.getLastDate()
                         )
 
-                        // ----------------------------------------
-                        // LINKS
-                        // ----------------------------------------
-
                         .pdfNotification(
                                 dto.getNotificationUrl()
                         )
@@ -856,10 +912,6 @@ public class AdminServiceImpl implements AdminService {
                         .officialWebsite(
                                 dto.getOfficialWebsite()
                         )
-
-                        // ----------------------------------------
-                        // ELIGIBILITY
-                        // ----------------------------------------
 
                         .ageLimit(
                                 dto.getAgeLimit()
@@ -877,10 +929,6 @@ public class AdminServiceImpl implements AdminService {
                                 dto.getSelectionProcess()
                         )
 
-                        // ----------------------------------------
-                        // MASTER VALUES
-                        // ----------------------------------------
-
                         .category(
                                 category.getName()
                         )
@@ -889,10 +937,6 @@ public class AdminServiceImpl implements AdminService {
                                 state.getName()
                         );
 
-
-        // --------------------------------------------------------
-        // POST DATE
-        // --------------------------------------------------------
 
         if (dto.getPostDate() != null) {
 
