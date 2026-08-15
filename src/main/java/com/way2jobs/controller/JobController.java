@@ -16,6 +16,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -521,4 +524,41 @@ public class JobController {
             return false;
         }
     }
+
+    // ============================================================
+// STATE-WISE ACTIVE JOB COUNTS
+// ============================================================
+//
+// GET:
+// /api/jobs/state-counts
+//
+// Example response:
+//
+// {
+//   "Andhra Pradesh": 120,
+//   "Telangana": 95,
+//   "Karnataka": 80
+// }
+//
+// ============================================================
+
+@GetMapping("/state-counts")
+public ResponseEntity<Map<String, Long>> getStateJobCounts() {
+
+    Map<String, Long> response = new LinkedHashMap<>();
+
+    List<Object[]> results =
+            jobService.getActiveJobCountsByState();
+
+    for (Object[] row : results) {
+
+        String state = (String) row[0];
+
+        Long count = ((Number) row[1]).longValue();
+
+        response.put(state, count);
+    }
+
+    return ResponseEntity.ok(response);
+}
 }

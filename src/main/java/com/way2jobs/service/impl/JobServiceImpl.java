@@ -649,4 +649,6 @@ public class JobServiceImpl implements JobService {
 
         return jobRepository.findActiveJobCountsByState();
     }
+
+   
 }
