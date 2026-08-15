@@ -254,7 +254,8 @@ public class JobController {
     // NEW — LATEST JOBS
     // =========================================================
     //
-    // Based on importedAt.
+    // Based on postDate.
+    // Returns active jobs posted within the last 6 days.
     //
     // GET:
     // /api/jobs/latest?page=0&size=20
@@ -422,6 +423,35 @@ public class JobController {
     // GET:
     // /api/jobs/filter-counts
     //
+    // =========================================================
+
+    @GetMapping("/state-counts")
+    public ResponseEntity<Map<String, Long>> getStateCounts() {
+
+        Map<String, Long> response = new LinkedHashMap<>();
+
+        for (Object[] row : jobService.getActiveJobCountsByState()) {
+
+            if (row == null || row.length < 2 || row[0] == null) {
+                continue;
+            }
+
+            String state = row[0].toString().trim();
+
+            if (state.isBlank()) {
+                continue;
+            }
+
+            Number count = (Number) row[1];
+            response.put(state, count == null ? 0L : count.longValue());
+        }
+
+        return ResponseEntity.ok(response);
+    }
+
+
+    // =========================================================
+    // FILTER COUNTS
     // =========================================================
 
     @GetMapping("/filter-counts")

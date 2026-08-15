@@ -145,5 +145,7 @@ public interface JobService {
             String state
     );
 
+    List<Object[]> getActiveJobCountsByState();
+
     long getExpiringSoonJobCount();
 }

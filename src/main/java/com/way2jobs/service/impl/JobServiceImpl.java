@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
@@ -381,10 +382,14 @@ public class JobServiceImpl implements JobService {
             Pageable pageable
     ) {
 
-        return jobRepository
-                .findByIsActiveTrueOrderByImportedAtDesc(
-                        pageable
-                );
+        LocalDateTime endDate = LocalDateTime.now();
+        LocalDateTime startDate = endDate.minusDays(6);
+
+        return jobRepository.findLatestJobs(
+                startDate,
+                endDate,
+                pageable
+        );
     }
 
 
@@ -637,5 +642,11 @@ public class JobServiceImpl implements JobService {
 
         return value != null &&
                 !value.isBlank();
+    }
+
+    @Override
+    public List<Object[]> getActiveJobCountsByState() {
+
+        return jobRepository.findActiveJobCountsByState();
     }
 }
