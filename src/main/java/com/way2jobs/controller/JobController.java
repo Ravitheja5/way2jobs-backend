@@ -525,40 +525,5 @@ public class JobController {
         }
     }
 
-    // ============================================================
-// STATE-WISE ACTIVE JOB COUNTS
-// ============================================================
-//
-// GET:
-// /api/jobs/state-counts
-//
-// Example response:
-//
-// {
-//   "Andhra Pradesh": 120,
-//   "Telangana": 95,
-//   "Karnataka": 80
-// }
-//
-// ============================================================
-
-@GetMapping("/state-counts")
-public ResponseEntity<Map<String, Long>> getStateJobCounts() {
-
-    Map<String, Long> response = new LinkedHashMap<>();
-
-    List<Object[]> results =
-            jobService.getActiveJobCountsByState();
-
-    for (Object[] row : results) {
-
-        String state = (String) row[0];
-
-        Long count = ((Number) row[1]).longValue();
-
-        response.put(state, count);
-    }
-
-    return ResponseEntity.ok(response);
-}
+ 
 }
